@@ -1,0 +1,5 @@
+name: qb_sum
+dependencies:
+  - python=3.7.0
+  - pylint
+  - nltk=3.3.0
