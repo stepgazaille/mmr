@@ -9,22 +9,28 @@ Use the following procedure to install all requirements:
 1. Download and install the Anaconda Python distribution from the [Anaconda website](https://www.anaconda.com/).
 
 2. Create new virtual environment:
-
 ```
 cd query_based_summarization
 conda env create
 ```
 
 To remove the environment, use:
-
 ```
 conda remove -y -n qb_sum --all
 ```
 
+
+
+To update the environment, use:
+```
+conda env update -n qbmd -f environment.yml
+```
+
+
+
 ## Usage
 
 To activate this environment, use:
-
 ```
 source activate qb_sum
 ```
