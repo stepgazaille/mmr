@@ -2,11 +2,12 @@ import os
 import math
 import string
 import re
-import sentence
 import nltk
 from nltk.corpus import stopwords
 
 # Original implementation: https://github.com/syedhope/Text_Summarization-MMR_and_LexRank
+
+
 #---------------------------------------------------------------------------------
 # Description	: Function to preprocess the files in the document cluster before
 #				  passing them into the MMR summarizer system. Here the sentences
@@ -60,7 +61,7 @@ def processFile(file_name):
         
         # list of sentence objects
         if stemmedSent != []:
-            sentences.append(sentence.sentence(file_name, stemmedSent, originalWords))				
+            sentences.append(sentence(file_name, stemmedSent, originalWords))				
     
     return sentences
 
@@ -212,7 +213,7 @@ def buildQuery(sentences, TF_IDF_w, n):
         j=j+1
 
     # return the top selected words as a sentence
-    return sentence.sentence("query", queryWords, queryWords)
+    return sentence("query", queryWords, queryWords)
 
 #---------------------------------------------------------------------------------
 # Description	: Function to find the best sentence in reference to the query
@@ -288,6 +289,82 @@ def MMRScore(Si, query, Sj, lambta, IDF):
     MMR_SCORE = l_expr - r_expr	
 
     return MMR_SCORE
+
+
+
+
+
+class sentence(object):
+
+	#------------------------------------------------------------------------------
+	# Description	: Constructor to initialize the setence object
+	# Parameters  	: docName, name of the document/file
+	#				  preproWords, words of the file after the stemming process
+	#				  originalWords, actual words before stemming
+	# Return 		: None
+	#------------------------------------------------------------------------------
+	def __init__(self, docName, preproWords, originalWords):
+		self.docName = docName
+		self.preproWords = preproWords
+		self.wordFrequencies = self.sentenceWordFreq()
+		self.originalWords = originalWords
+
+	#------------------------------------------------------------------------------
+	# Description	: Function to return the name of the document
+	# Parameters	: None
+	# Return 		: name of the document
+	#------------------------------------------------------------------------------
+	def getDocName(self):
+		return self.docName
+	
+	#------------------------------------------------------------------------------
+	# Description	: Function to return the stemmed words
+	# Parameters	: None
+	# Return 		: stemmed words of the sentence
+	#------------------------------------------------------------------------------
+	def getPreProWords(self):
+		return self.preproWords
+	
+	#------------------------------------------------------------------------------
+	# Description	: Function to return the original words of the sentence before
+	#				  stemming
+	# Parameters	: None
+	# Return 		: pre-stemmed words
+	#------------------------------------------------------------------------------
+	def getOriginalWords(self):
+		return self.originalWords
+
+	#------------------------------------------------------------------------------
+	# Description	: Function to return a dictonary of the word frequencies for
+	#				  the particular sentence object
+	# Parameters	: None
+	# Return 		: dictionar of word frequencies
+	#------------------------------------------------------------------------------
+	def getWordFreq(self):
+		return self.wordFrequencies	
+	
+	#------------------------------------------------------------------------------
+	# Description	: Function to create a dictonary of word frequencies for the
+	#				  sentence object
+	# Parameters	: None
+	# Return 		: dictionar of word frequencies
+	#------------------------------------------------------------------------------
+	def sentenceWordFreq(self):
+		wordFreq = {}
+		for word in self.preproWords:
+			if word not in wordFreq.keys():
+				wordFreq[word] = 1
+			else:
+				# if word in stopwords.words('english'):
+				# 	wordFreq[word] = 1
+				# else:			
+				wordFreq[word] = wordFreq[word] + 1
+		return wordFreq
+
+
+
+
+
 
 # -------------------------------------------------------------
 #	MAIN FUNCTION
