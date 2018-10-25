@@ -8,23 +8,23 @@ from nltk.corpus import stopwords
 # Original implementation: https://github.com/syedhope/Text_Summarization-MMR_and_LexRank
 
 
-
 class MMR(object):
+    """A summarizer implementing the Maximal Marginal Relevence (MMR) summarization algorithm (Carbonell & Goldstein, 1998)."""
 
     def __init__(self):
-            self.attribute = None
+        """
+        MMR default constructor. MMR is a simple query-based, multi-document summarization algorithm.
+        """
 
 
-
-    #---------------------------------------------------------------------------------
-    # Description	: Function to preprocess the files in the document cluster before
-    #				  passing them into the MMR summarizer system. Here the sentences
-    #				  of the document cluster are modelled as sentences after extracting
-    #				  from the files in the folder path. 
-    # Parameters	: file_name, name of the file in the document cluster
-    # Return 		: list of sentence object
-    #---------------------------------------------------------------------------------
-    def processFile(self, file_name):
+    def __processFile(self, file_name):
+        """
+        Preprocess the files in the document cluster before passing them into the MMR summarizer system. Here the sentences of the document cluster are modelled as sentences after extracting from the files in the folder path.
+        :param file_name: file_name, name of the file in the document cluster.
+        :type file_name: str()
+        :return: pre-processed sentences.
+        :rtype: list(Sentence)
+        """
 
         # read file from provided folder path
         f = open(file_name,'r')
@@ -73,13 +73,15 @@ class MMR(object):
         
         return sentences
 
-    #---------------------------------------------------------------------------------
-    # Description	: Function to find the term frequencies of the words in the
-    #				  sentences present in the provided document cluster
-    # Parameters	: sentences, sentences of the document cluster
-    # Return 		: dictonary of word, term frequency score
-    #---------------------------------------------------------------------------------
-    def TFs(self, sentences):
+
+    def __TFs(self, sentences):
+        """
+        Calculate term frequencies of the words in the sentences present in the provided document cluster.
+        :param sentences: sentences of the document cluster.
+        :type sentences: list(Sentence)
+        :return: dictonary of term frequency for words in sentences.
+        :rtype: dict
+        """
         # initialize tfs dictonary
         tfs = {}
 
@@ -98,13 +100,16 @@ class MMR(object):
                     tfs[word] = wordFreqs[word]	
         return tfs
 
-    #---------------------------------------------------------------------------------
-    # Description	: Function to find the inverse document frequencies of the words in
-    #				  the sentences present in the provided document cluster 
-    # Parameters	: sentences, sentences of the document cluster
-    # Return 		: dictonary of word, inverse document frequency score
-    #---------------------------------------------------------------------------------
-    def IDFs(self, sentences):
+
+    def __IDFs(self, sentences):
+        """
+        Calculate the inverse document frequencies of the words in the sentences present in the provided document cluster.
+        :param sentences: sentences of the document cluster.
+        :type sentences: list(Sentence)
+        :return: dictonary of inverse document frequency score for words in sentences.
+        :rtype: dict
+        """
+
         N = len(sentences)
         idf = 0
         idfs = {}
@@ -139,16 +144,19 @@ class MMR(object):
                 
         return idfs
 
-    #---------------------------------------------------------------------------------
-    # Description	: Function to find TF-IDF score of the words in the document cluster
-    # Parameters	: sentences, sentences of the document cluster
-    # Return 		: dictonary of word, TF-IDF score
-    #---------------------------------------------------------------------------------
-    def TF_IDF(self, sentences):
+
+    def __TF_IDF(self, sentences):
+        """
+        Calculate TF-IDF score of the words in the document cluster.
+        :param sentences: sentences of the document cluster.
+        :type sentences: list(Sentence)
+        :return: dictonary of TF-IDF score for words in sentences.
+        :rtype: dict
+        """
 
         # Method variables
-        tfs = self.TFs(sentences)
-        idfs = self.IDFs(sentences)
+        tfs = self.__TFs(sentences)
+        idfs = self.__IDFs(sentences)
         retval = {}
 
 
@@ -168,15 +176,18 @@ class MMR(object):
 
         return retval
 
-    #---------------------------------------------------------------------------------
-    # Description	: Function to find the sentence similarity for a pair of sentences
-    #				  by calculating cosine similarity
-    # Parameters	: sentence1, first sentence
-    #				  sentence2, second sentence to which first sentence has to be compared
-    #				  IDF_w, dictinoary of IDF scores of words in the document cluster
-    # Return 		: cosine similarity score
-    #---------------------------------------------------------------------------------
-    def sentenceSim(self, sentence1, sentence2, IDF_w):
+
+    def __sentenceSim(self, sentence1, sentence2, IDF_w):
+        """
+        Determining the sentence similarity for a pair of sentences by calculating cosine similarity.
+        :param sentence1: first sentence.
+        :type sentence1: Sentence
+        :param sentence2: second sentence.
+        :type sentence2: Sentence
+        :return: cosine similarity score.
+        :rtype: float
+        """
+
         numerator = 0
         denominator = 0	
         
@@ -192,14 +203,20 @@ class MMR(object):
         except ZeroDivisionError:
             return float("-inf")	
 
-    #---------------------------------------------------------------------------------
-    # Description	: Function to build a query of n words on the basis of TF-IDF value
-    # Parameters	: sentences, sentences of the document cluster
-    #				  IDF_w, IDF values of the words
-    #				  n, desired length of query (number of words in query)
-    # Return 		: query sentence consisting of best n words
-    #---------------------------------------------------------------------------------
-    def buildQuery(self, sentences, TF_IDF_w, n):
+
+    def __buildQuery(self, sentences, TF_IDF_w, n):
+        """
+        Build a query of n words on the basis of TF-IDF value.
+        :param sentences: sentences of the document cluster.
+        :type sentences: list(Sentence)
+        :param TF_IDF_w: TF-IDF values of the words.
+        :type TF_IDF_w: dict
+        :param n: desired length of query (number of words in query).
+        :type n: int
+        :return: query sentence consisting of best n words.
+        :rtype: Sentence
+        """
+
         #sort in descending order of TF-IDF values
         scores = TF_IDF_w.keys()
         # scores.sort(reverse=True)
@@ -222,19 +239,25 @@ class MMR(object):
         # return the top selected words as a sentence
         return self.Sentence("query", queryWords, queryWords)
 
-    #---------------------------------------------------------------------------------
-    # Description	: Function to find the best sentence in reference to the query
-    # Parameters	: sentences, sentences of the document cluster
-    #				  query, reference query
-    #				  IDF, IDF value of words of the document cluster
-    # Return 		: best sentence among the sentences in the document cluster
-    #---------------------------------------------------------------------------------
+
     def bestSentence(self, sentences, query, IDF):
+        """
+        Find the best sentence in reference to the query.
+        :param sentences: sentences of the document cluster.
+        :type sentences: list(Sentence)
+        :param query: reference query.
+        :type query: Sentence
+        :param IDF: IDF value of words of the document cluster.
+        :type IDF: dict
+        :return: best sentence among the sentences in the document cluster.
+        :rtype: Sentence
+        """
+
         best_sentence = None
         maxVal = float("-inf")
 
         for sent in sentences:
-            similarity = self.sentenceSim(sent, query, IDF)		
+            similarity = self.__sentenceSim(sent, query, IDF)		
 
             if similarity > maxVal:
                 best_sentence = sent
@@ -243,17 +266,26 @@ class MMR(object):
 
         return best_sentence
 
-    #---------------------------------------------------------------------------------
-    # Description	: Function to create the summary set of a desired number of words 
-    # Parameters	: sentences, sentences of the document cluster
-    #				  best_sentnece, best sentence in the document cluster
-    #				  query, reference query for the document cluster
-    #				  summary_length, desired number of words for the summary
-    #				  labmta, lambda value of the MMR score calculation formula
-    #				  IDF, IDF value of words in the document cluster 
-    # Return 		: name 
-    #---------------------------------------------------------------------------------
-    def makeSummary(self, sentences, best_sentence, query, summary_length, lambta, IDF):	
+    
+    def makeSummary(self, sentences, best_sentence, query, summary_length, lambta, IDF):
+        """
+        Create the summary set of a desired number of words.
+        :param sentences: sentences of the document cluster.
+        :type sentences: list(Sentence)
+        :param best_sentence: best sentence in the document cluster.
+        :type best_sentence: Sentence
+        :param query: reference query.
+        :type query: Sentence
+        :param summary_length: desired number of words for the summary.
+        :type summary_length: int
+        :param lambta: lambda value of the MMR formula.
+        :type lambta: float
+        :param IDF: IDF value of words of the document cluster.
+        :type IDF: dict
+        :return: best sentence among the sentences in the document cluster.
+        :rtype: Sentence
+        """
+
         summary = [best_sentence]
         sum_len = len(best_sentence.getPreProWords())
 
@@ -264,7 +296,7 @@ class MMR(object):
             MMRval={}		
 
             for sent in sentences:
-                MMRval[sent] = self.MMRScore(sent, query, summary, lambta, IDF)
+                MMRval[sent] = self.__MMRScore(sent, query, summary, lambta, IDF)
 
             maxxer = max(MMRval, key=MMRval.get)
             summary.append(maxxer)
@@ -273,23 +305,31 @@ class MMR(object):
 
         return summary
 
-    #---------------------------------------------------------------------------------
-    # Description	: Function to calculate the MMR score given a sentence, the query
-    #				  and the current best set of sentences
-    # Parameters	: Si, particular sentence for which the MMR score has to be calculated
-    #				  query, query sentence for the particualr document cluster
-    #				  Sj, the best sentences that are already selected
-    #				  lambta, lambda value in the MMR formula
-    #				  IDF, IDF value for words in the cluster
-    # Return 		: name 
-    #---------------------------------------------------------------------------------
-    def MMRScore(self, Si, query, Sj, lambta, IDF):	
-        Sim1 = self.sentenceSim(Si, query, IDF)
+
+
+    def __MMRScore(self, Si, query, Sj, lambta, IDF):
+        """
+        Function to calculate the MMR score given a sentence, the query and the current best set of sentences.
+        :param Si: particular sentence for which the MMR score has to be calculated.
+        :type Si: Sentence
+        :param query: reference query.
+        :type query: Sentence
+        :param Sj: already selected best sentences.
+        :type Sj: list(Sentence)
+        :param lambta: lambda value of the MMR formula.
+        :type lambta: float
+        :param IDF: IDF value of words of the document cluster.
+        :type IDF: dict
+        :return: MMR score.
+        :rtype: float
+        """
+
+        Sim1 = self.__sentenceSim(Si, query, IDF)
         l_expr = lambta * Sim1
         value = [float("-inf")]
 
         for sent in Sj:
-            Sim2 = self.sentenceSim(Si, sent, IDF)
+            Sim2 = self.__sentenceSim(Si, sent, IDF)
             value.append(Sim2)
 
         r_expr = (1-lambta) * max(value)
@@ -303,60 +343,44 @@ class MMR(object):
 
     class Sentence(object):
 
-        #------------------------------------------------------------------------------
-        # Description	: Constructor to initialize the setence object
-        # Parameters  	: docName, name of the document/file
-        #				  preproWords, words of the file after the stemming process
-        #				  originalWords, actual words before stemming
-        # Return 		: None
-        #------------------------------------------------------------------------------
+ 
         def __init__(self, docName, preproWords, originalWords):
+            """
+            Sentence constructor.
+            Encapsulates sentences original text along preprocessed statistics.
+            :param docName: name of the original document/file.
+            :type docName: str
+            :param preproWords: words of the file after the stemming process.
+            :type preproWords: list(str)
+            :param originalWords: actual words before stemming.
+            :type originalWords: list(str)
+            """
             self.docName = docName
             self.preproWords = preproWords
             self.wordFrequencies = self.sentenceWordFreq()
             self.originalWords = originalWords
 
-        #------------------------------------------------------------------------------
-        # Description	: Function to return the name of the document
-        # Parameters	: None
-        # Return 		: name of the document
-        #------------------------------------------------------------------------------
+
         def getDocName(self):
             return self.docName
         
-        #------------------------------------------------------------------------------
-        # Description	: Function to return the stemmed words
-        # Parameters	: None
-        # Return 		: stemmed words of the sentence
-        #------------------------------------------------------------------------------
         def getPreProWords(self):
             return self.preproWords
         
-        #------------------------------------------------------------------------------
-        # Description	: Function to return the original words of the sentence before
-        #				  stemming
-        # Parameters	: None
-        # Return 		: pre-stemmed words
-        #------------------------------------------------------------------------------
         def getOriginalWords(self):
             return self.originalWords
 
-        #------------------------------------------------------------------------------
-        # Description	: Function to return a dictonary of the word frequencies for
-        #				  the particular sentence object
-        # Parameters	: None
-        # Return 		: dictionar of word frequencies
-        #------------------------------------------------------------------------------
+
         def getWordFreq(self):
             return self.wordFrequencies	
         
-        #------------------------------------------------------------------------------
-        # Description	: Function to create a dictonary of word frequencies for the
-        #				  sentence object
-        # Parameters	: None
-        # Return 		: dictionar of word frequencies
-        #------------------------------------------------------------------------------
+
         def sentenceWordFreq(self):
+            """
+            Create a dictonary of word frequencies for the sentence object.
+            :return: dictonary of word frequencies.
+            :rtype: dict
+            """
             wordFreq = {}
             for word in self.preproWords:
                 if word not in wordFreq.keys():
@@ -373,10 +397,11 @@ class MMR(object):
 
 
 
-    # -------------------------------------------------------------
-    #	MAIN FUNCTION
-    # -------------------------------------------------------------
-    def generate_summaries(self):	
+    def generate_summaries(self):
+        """
+        Generate_summaries.
+        """
+        
 
         # set the main Document folder path where the subfolders are present
         main_folder_path = os.getcwd() + "/documents"
@@ -394,15 +419,15 @@ class MMR(object):
             sentences = []	
 
             for file in files:			
-                sentences = sentences + self.processFile(curr_folder + "/" + file)
+                sentences = sentences + self.__processFile(curr_folder + "/" + file)
 
             # calculate TF, IDF and TF-IDF scores
             # TF_w 		= TFs(sentences)
-            IDF_w 		= self.IDFs(sentences)
-            TF_IDF_w 	= self.TF_IDF(sentences)	
+            IDF_w 		= self.__IDFs(sentences)
+            TF_IDF_w 	= self.__TF_IDF(sentences)	
 
             # build query; set the number of words to include in our query
-            query = self.buildQuery(sentences, TF_IDF_w, 10)		
+            query = self.__buildQuery(sentences, TF_IDF_w, 10)		
 
             # pick a sentence that best matches the query	
             best1sentence = self.bestSentence(sentences, query, IDF_w)		
