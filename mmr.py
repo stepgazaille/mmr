@@ -397,14 +397,16 @@ class MMR(object):
 
 
 
-    def generate_summaries(self):
+    def generate_summaries(self, documents_dir=None, summaries_dir=None):
         """
         Generate_summaries.
         """
-        
 
         # set the main Document folder path where the subfolders are present
-        main_folder_path = os.getcwd() + "/documents"
+        main_folder_path = documents_dir
+        results_folder = summaries_dir + "/MMR"
+
+        
 
         # read in all the subfolder names present in the main folder
         for folder in os.listdir(main_folder_path):
@@ -439,7 +441,8 @@ class MMR(object):
             for sent in summary:
                 final_summary = final_summary + sent.getOriginalWords() + "\n"
             final_summary = final_summary[:-1]
-            results_folder = os.getcwd() + "/results/MMR"
+
             if not os.path.exists(results_folder):
                 os.makedirs(results_folder)	
+            
             with open(os.path.join(results_folder,(str(folder) + ".mmr")),"w") as fileOut: fileOut.write(final_summary)

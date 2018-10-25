@@ -14,29 +14,28 @@ conda env create
 ```
 
 ## Usage
-To activate this environment, use:
+To activate the project's virtual environment, use:
 ```
 source activate qbmd
 ```
 
-Launch Jupyter to manage and execute notebooks:
+To launch Jupyter to manage and execute notebooks, use:
 ```
 jupyter notebook
 ```
-
 Press `CTRL+C` to stop execution.
 
-To deactivate an active environment, use:
+To deactivate the project's virtual environment, use:
 ```
 source deactivate
 ```
 
-To remove the environment, use:
+To remove the project's virtual environment, use:
 ```
 conda remove -y -n qbmd --all
 ```
 
-To update the environment, use:
+To update the project's virtual environment, use:
 ```
 conda env update -n qbmd -f environment.yml
 ```
