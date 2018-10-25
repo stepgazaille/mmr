@@ -40,19 +40,3 @@ To update the environment, use:
 ```
 conda env update -n qbmd -f environment.yml
 ```
-
-## Install NLTK packages
-To install all NLTK packages:
-1. Activate the virtual environment.
-2. Open the Python interpreter by typing the following command in the terminal: `python`
-3. Excute the following command in the Python interpreter:
-```
-import nltk
-nltk.download()
-```
-The "NLTK Downloader" window will appear.
-
-4. Select the "All packages" option.
-5. Click on the "Download" button and wait for download completion.
-6. Close the "NLTK Downloader" window.
-7. Close the Python interpreter by typing the following command in the terminal: quit()
