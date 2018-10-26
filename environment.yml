@@ -8,6 +8,6 @@ dependencies:
   - numpy=1.15.3
   - nltk=3.3.0
   - pip:
-    - 'git+https://github.com/stepgazaille/pythonrouge.git'
+    - 'git+https://github.com/tagucci/pythonrouge.git'
 
     

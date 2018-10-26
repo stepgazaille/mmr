@@ -306,7 +306,6 @@ class MMR(object):
         return summary
 
 
-
     def __MMRScore(self, Si, query, Sj, lambta, IDF):
         """
         Function to calculate the MMR score given a sentence, the query and the current best set of sentences.
@@ -338,65 +337,6 @@ class MMR(object):
         return MMR_SCORE
 
 
-
-
-
-    class Sentence(object):
-
- 
-        def __init__(self, docName, preproWords, originalWords):
-            """
-            Sentence constructor.
-            Encapsulates sentences original text along preprocessed statistics.
-            :param docName: name of the original document/file.
-            :type docName: str
-            :param preproWords: words of the file after the stemming process.
-            :type preproWords: list(str)
-            :param originalWords: actual words before stemming.
-            :type originalWords: list(str)
-            """
-            self.docName = docName
-            self.preproWords = preproWords
-            self.wordFrequencies = self.sentenceWordFreq()
-            self.originalWords = originalWords
-
-
-        def getDocName(self):
-            return self.docName
-        
-        def getPreProWords(self):
-            return self.preproWords
-        
-        def getOriginalWords(self):
-            return self.originalWords
-
-
-        def getWordFreq(self):
-            return self.wordFrequencies	
-        
-
-        def sentenceWordFreq(self):
-            """
-            Create a dictonary of word frequencies for the sentence object.
-            :return: dictonary of word frequencies.
-            :rtype: dict
-            """
-            wordFreq = {}
-            for word in self.preproWords:
-                if word not in wordFreq.keys():
-                    wordFreq[word] = 1
-                else:
-                    # if word in stopwords.words('english'):
-                    # 	wordFreq[word] = 1
-                    # else:			
-                    wordFreq[word] = wordFreq[word] + 1
-            return wordFreq
-
-
-
-
-
-
     def generate_summaries(self, documents_dir=None, summaries_dir=None):
         """
         Generate_summaries.
@@ -406,7 +346,6 @@ class MMR(object):
         main_folder_path = documents_dir
         results_folder = summaries_dir + "/MMR"
 
-        
 
         # read in all the subfolder names present in the main folder
         for folder in os.listdir(main_folder_path):
@@ -429,7 +368,7 @@ class MMR(object):
             TF_IDF_w 	= self.__TF_IDF(sentences)	
 
             # build query; set the number of words to include in our query
-            query = self.__buildQuery(sentences, TF_IDF_w, 10)		
+            query = self.__buildQuery(sentences, TF_IDF_w, 10)
 
             # pick a sentence that best matches the query	
             best1sentence = self.bestSentence(sentences, query, IDF_w)		
@@ -445,4 +384,54 @@ class MMR(object):
             if not os.path.exists(results_folder):
                 os.makedirs(results_folder)	
             
-            with open(os.path.join(results_folder,(str(folder) + ".mmr")),"w") as fileOut: fileOut.write(final_summary)
+            with open(os.path.join(results_folder,(str(folder))),"w") as fileOut: fileOut.write(final_summary)
+
+    
+
+    class Sentence(object):
+
+        def __init__(self, docName, preproWords, originalWords):
+            """
+            Sentence constructor.
+            Encapsulates sentences original text along preprocessed statistics.
+            :param docName: name of the original document/file.
+            :type docName: str
+            :param preproWords: words of the file after the stemming process.
+            :type preproWords: list(str)
+            :param originalWords: actual words before stemming.
+            :type originalWords: list(str)
+            """
+            self.docName = docName
+            self.preproWords = preproWords
+            self.wordFrequencies = self.sentenceWordFreq()
+            self.originalWords = originalWords
+
+        def getDocName(self):
+            return self.docName
+        
+        def getPreProWords(self):
+            return self.preproWords
+        
+        def getOriginalWords(self):
+            return self.originalWords
+
+
+        def getWordFreq(self):
+            return self.wordFrequencies	
+        
+        def sentenceWordFreq(self):
+            """
+            Create a dictonary of word frequencies for the sentence object.
+            :return: dictonary of word frequencies.
+            :rtype: dict
+            """
+            wordFreq = {}
+            for word in self.preproWords:
+                if word not in wordFreq.keys():
+                    wordFreq[word] = 1
+                else:
+                    # if word in stopwords.words('english'):
+                    # 	wordFreq[word] = 1
+                    # else:			
+                    wordFreq[word] = wordFreq[word] + 1
+            return wordFreq
