@@ -1,13 +1,19 @@
 import os
 import re
-from mmr import MMR
+import json
 from pathlib import Path
-
-corporaDir = Path(os.getcwd() + '/documents')
-referencesDir = Path(os.getcwd() + '/references')
-summariesDir = Path(os.getcwd() + '/summaries')
+from mmr import MMR
 
 
+# Defining directory structure:
+with open('directories.json') as f:
+    directories = json.load(f)
+corporaDir = Path(os.getcwd() + directories['corpora'])
+referencesDir = Path(os.getcwd() + directories['references'])
+summariesDir = Path(os.getcwd() + directories['summaries'])
+
+
+# Create summaries for all corpora:
 mmr = MMR()
 for corpus in os.listdir(corporaDir):
     print("Running MMR Summarizer for files in corpus", corpus)
