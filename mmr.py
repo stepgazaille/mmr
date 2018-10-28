@@ -337,57 +337,52 @@ class MMR(object):
         return MMR_SCORE
 
 
-    def generate_summaries(self, documents_dir=None, summaries_dir=None):
+    def summarize(self, corporaDir=None, corpus=None, summariesDir=None):
         """
-        Generate_summaries.
+        Generates a summary of the documents located in the corporaDir/corpus directory.
+        The generated summary is outputed to the summariesDir directory.
+        The summary is named after the corpus.
+        :param corporaDir: corpora directory.
+        :type corporaDir: Path
+        :param corpus: name of the directory containing the documents to be summarized.
+        :type corpus: str
+        :param summariesDir: summaries directory.
+        :type summariesDir: Path
         """
+        # find all documents in corpus
+        files = os.listdir(corporaDir/corpus)
 
-        # set the main Document folder path where the subfolders are present
-        main_folder_path = documents_dir
-        results_folder = summaries_dir + "/MMR"
+        sentences = []	
 
+        for file in files:	
+            sentences = sentences + self.__processFile(corporaDir/corpus/file)
 
-        # read in all the subfolder names present in the main folder
-        for folder in os.listdir(main_folder_path):
-            
-            print("Running MMR Summarizer for files in folder: ", folder)
-            # for each folder run the MMR summarizer and generate the final summary
-            curr_folder = main_folder_path + "/" + folder		
+        # calculate TF, IDF and TF-IDF scores
+        # TF_w 		= TFs(sentences)
+        IDF_w 		= self.__IDFs(sentences)
+        TF_IDF_w 	= self.__TF_IDF(sentences)	
 
-            # find all files in the sub folder selected
-            files = os.listdir(curr_folder)
+        # build query; set the number of words to include in our query
+        query = self.__buildQuery(sentences, TF_IDF_w, 10)
 
-            sentences = []	
+        # pick a sentence that best matches the query	
+        best1sentence = self.bestSentence(sentences, query, IDF_w)		
 
-            for file in files:			
-                sentences = sentences + self.__processFile(curr_folder + "/" + file)
+        # build summary by adding more relevant sentences
+        summary = self.makeSummary(sentences, best1sentence, query, 100, 0.5, IDF_w)
+        
+        final_summary = ""
+        for sent in summary:
+            final_summary = final_summary + sent.getOriginalWords() + "\n"
+        final_summary = final_summary[:-1]
 
-            # calculate TF, IDF and TF-IDF scores
-            # TF_w 		= TFs(sentences)
-            IDF_w 		= self.__IDFs(sentences)
-            TF_IDF_w 	= self.__TF_IDF(sentences)	
-
-            # build query; set the number of words to include in our query
-            query = self.__buildQuery(sentences, TF_IDF_w, 10)
-
-            # pick a sentence that best matches the query	
-            best1sentence = self.bestSentence(sentences, query, IDF_w)		
-
-            # build summary by adding more relevant sentences
-            summary = self.makeSummary(sentences, best1sentence, query, 100, 0.5, IDF_w)
-            
-            final_summary = ""
-            for sent in summary:
-                final_summary = final_summary + sent.getOriginalWords() + "\n"
-            final_summary = final_summary[:-1]
-
-            if not os.path.exists(results_folder):
-                os.makedirs(results_folder)	
-            
-            with open(os.path.join(results_folder,(str(folder))),"w") as fileOut: fileOut.write(final_summary)
+        mmr_summaries = summariesDir /'MMR'
+        if not os.path.exists(mmr_summaries):
+            os.makedirs(mmr_summaries)	
+        
+        with open(os.path.join(mmr_summaries,(str(corpus))),"w") as fileOut: fileOut.write(final_summary)
 
     
-
     class Sentence(object):
 
         def __init__(self, docName, preproWords, originalWords):
