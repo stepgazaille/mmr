@@ -21,6 +21,9 @@ documents = loader.getDocuments()
 
 for event in documents.keys():
     print("EVENT", event)
+    print('\tQUERY: ', loader.getQuery(event))
+    loader.getQuery(event)
     for document in documents[event]:
         print('\tTITLE:' + document['title'])
         print('\tTEXT:' + document['text'][:90],"...")
+    print('\tREFERENCE: ', loader.getReference(event))

@@ -1,5 +1,6 @@
-import pandas as pd
 import os
+from pathlib import Path
+import pandas as pd
 
 class ToyCorpusLoader(object):
     """A data loader for the toy corpus."""
@@ -27,4 +28,17 @@ class ToyCorpusLoader(object):
                     'text': row['TEXT'],
                 })
         return documents
+    
+
+    def getQuery(self, event):
+        file_name = event + ".txt"
+        if Path(self.queriesDir/file_name).is_file:
+            with open(self.queriesDir/file_name) as f:
+                return f.readline()
+    
+    def getReference(self, event):
+        file_name = event + ".txt"
+        if Path(self.referencesDir/file_name).is_file:
+            with open(self.referencesDir/file_name) as f:
+                return f.readline()
             
