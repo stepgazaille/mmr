@@ -41,6 +41,10 @@ conda env update -n qbmd -f environment.yml
 ```
 
 
+## Corpus
+A toy corpus built using articles from [The Guardian](https://www.theguardian.com/international) is provided.
+
+
 ## References
 Original papers of baseline algorithms:
 - **MMR**: Carbonell, J. & Goldstein, J. (1998). [The Use of MMR, Diversity-based Reranking for Reordering Documents and Producing Summaries](https://dl.acm.org/citation.cfm?id=291025). *Proceedings of he 21st Annual International ACM SIGIR Conference on Research and Development in Information Retrieval* (pp. 335–336). New York, NY, USA : ACM.

@@ -110,6 +110,5 @@ venv.bak/
 .vscode/
 
 # Corpora directories
-documents/
-references/
-summaries/
+corpora/*
+!corpora/toy_corpus/
