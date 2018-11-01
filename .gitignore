@@ -111,4 +111,4 @@ venv.bak/
 
 # Corpora directories
 corpora/*
-!corpora/toy_corpus/
+!corpora/test/

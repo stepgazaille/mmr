@@ -41,8 +41,8 @@ conda env update -n qbmd -f environment.yml
 ```
 
 
-## Corpus
-A toy corpus built using articles from [The Guardian](https://www.theguardian.com/international) is provided.
+## Test corpus
+A small corpus built using articles from [The Guardian](https://www.theguardian.com/international) is provided for development and testing.
 
 
 ## References

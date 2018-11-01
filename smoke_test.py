@@ -2,7 +2,7 @@ import os
 import re
 import json
 from pathlib import Path
-from loaders import ToyCorpusLoader
+from loaders import TestCorpusLoader
 from mmr import MMR
 
 
@@ -10,20 +10,22 @@ from mmr import MMR
 with open('directories.json') as f:
     directories = json.load(f)
 
-documentsDir = Path(os.getcwd()) / directories['toy_corpus']['documents']
-queriesDir = Path(os.getcwd()) / directories['toy_corpus']['queries']
-referencesDir = Path(os.getcwd()) / directories['toy_corpus']['references']
-summariesDir = Path(os.getcwd()) / directories['candidates']
+
+documentsDir = Path(os.getcwd()) / directories['test']['documents']
+queriesDir = Path(os.getcwd()) / directories['test']['queries']
+referencesDir = Path(os.getcwd()) / directories['test']['references']
+candidatesDir = Path(os.getcwd()) / directories['test']['candidates']
 
 
-loader = ToyCorpusLoader(documentsDir, queriesDir, referencesDir)
-documents = loader.getDocuments()
+loader = TestCorpusLoader(documentsDir, queriesDir, referencesDir, candidatesDir)
 
-for event in documents.keys():
-    print("EVENT", event)
-    print('\tQUERY: ', loader.getQuery(event))
-    loader.getQuery(event)
-    for document in documents[event]:
-        print('\tTITLE:' + document['title'])
-        print('\tTEXT:' + document['text'][:90],"...")
-    print('\tREFERENCE: ', loader.getReference(event))
+documentsDir = loader.getDocuments()
+
+for topic in documentsDir.keys():
+    print("TOPIC", topic)
+    print('\tQUERY:\t', loader.getQuery(topic))
+    loader.getQuery(topic)
+    for document in documentsDir[topic]:
+        print('\tTITLE:\t', document['title'])
+        print('\tTEXT:\t', document['text'][:90],"...")
+    print('\tREF:\t', loader.getReference(topic))

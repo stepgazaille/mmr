@@ -1,8 +1,8 @@
 {
-    "toy_corpus": {
-        "documents": "corpora/toy_corpus/documents",
-        "queries": "corpora/toy_corpus/queries",
-        "references": "corpora/toy_corpus/references"
-    },
-    "candidates": "corpora/candidates"
+    "test": {
+        "documents": "corpora/test/documents",
+        "queries": "corpora/test/queries",
+        "references": "corpora/test/references",
+        "candidates": "corpora/test/candidates"
+    }    
 }
