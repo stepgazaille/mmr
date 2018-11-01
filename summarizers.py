@@ -4,6 +4,7 @@ import string
 import re
 import nltk
 from nltk.corpus import stopwords
+from nltk.tokenize import RegexpTokenizer
 
 # Original implementation: https://github.com/syedhope/Text_Summarization-MMR_and_LexRank
 
@@ -16,36 +17,28 @@ class MMR(object):
         """
 
 
-    def __processFile(self, file_name):
+    def __processDocument(self, document):
         """
-        Preprocess the files in the document cluster before passing them into the MMR summarizer system. Here the sentences of the document cluster are modelled as sentences after extracting from the files in the folder path.
-        :param file_name: file_name, name of the file in the document cluster.
-        :type file_name: str
+        Preprocess a document before passing it into the MMR summarizer system.
+        :param document: a body of text.
+        :type document: Document
         :return: pre-processed sentences.
         :rtype: list(Sentence)
         """
 
         # read file from provided folder path
-        f = open(file_name,'r')
-        text_0 = f.read()
-
-        # extract content in TEXT tag and remove tags
-        text_1 = re.search(r"<TEXT>.*</TEXT>",text_0, re.DOTALL)
-        text_1 = re.sub("<TEXT>\n","",text_1.group(0))
-        text_1 = re.sub("\n</TEXT>","",text_1)
+        text = document.text
 
         # replace all types of quotations by normal quotes
-        text_1 = re.sub("\n"," ",text_1)
-        
-        text_1 = re.sub("\"","\"",text_1)
-        text_1 = re.sub("''","\"",text_1)
-        text_1 = re.sub("``","\"",text_1)	
-        
-        text_1 = re.sub(" +"," ",text_1)
+        text = re.sub("\n"," ",text)
+        text = re.sub("\"","\"",text)
+        text = re.sub("''","\"",text)
+        text = re.sub("``","\"",text)	
+        text = re.sub(" +"," ",text)
 
         # segment data into a list of sentences
         sentence_token = nltk.data.load('tokenizers/punkt/english.pickle')
-        lines = sentence_token.tokenize(text_1.strip())	
+        lines = sentence_token.tokenize(text.strip())
 
         # setting the stemmer
         sentences = []
@@ -68,7 +61,7 @@ class MMR(object):
             
             # list of sentence objects
             if stemmedSent != []:
-                sentences.append(self.Sentence(file_name, stemmedSent, originalWords))				
+                sentences.append(self.Sentence(document, stemmedSent, originalWords))				
         
         return sentences
 
@@ -203,40 +196,17 @@ class MMR(object):
             return float("-inf")	
 
 
-    def __buildQuery(self, sentences, TF_IDF_w, n):
+    def __processQuery(self, query):
         """
-        Build a query of n words on the basis of TF-IDF value.
-        :param sentences: sentences of the document cluster.
-        :type sentences: list(Sentence)
-        :param TF_IDF_w: TF-IDF values of the words.
-        :type TF_IDF_w: dict
-        :param n: desired length of query (number of words in query).
-        :type n: int
-        :return: query sentence consisting of best n words.
-        :rtype: Sentence
+        Pre-process a query before submitting it to the MMR algorithm.
+        :param query: a question about the information contained in the set of documents.
+        :type query: str
         """
-
-        #sort in descending order of TF-IDF values
-        scores = TF_IDF_w.keys()
-        # scores.sort(reverse=True)
-        scores = sorted(scores, reverse=True)	
-        
-        i = 0
-        j = 0
-        queryWords = []
-
-        # select top n words
-        while(i<n):
-            words = TF_IDF_w[scores[j]]
-            for word in words:
-                queryWords.append(word)
-                i=i+1
-                if (i>n): 
-                    break
-            j=j+1
-
-        # return the top selected words as a sentence
-        return self.Sentence("query", queryWords, queryWords)
+        tokenizer = RegexpTokenizer(r'\w+')
+        stop_words = stopwords.words('english') + ['Why', 'why']
+        word_tokens = tokenizer.tokenize(query)
+        filteredQuery = [w for w in word_tokens if not w in stop_words]
+        return self.Sentence("query", filteredQuery, query)
 
 
     def bestSentence(self, sentences, query, IDF):
@@ -336,7 +306,8 @@ class MMR(object):
         return MMR_SCORE
 
 
-    def summarize(self, corporaDir=None, corpus=None, summariesDir=None):
+    # def summarize(self, corporaDir=None, corpus=None, summariesDir=None):
+    def summarize(self, documents=None, query=None, candidatesDir=None):
         """
         Generates a summary of the documents located in the corporaDir/corpus directory.
         The generated summary is outputed to the summariesDir directory.
@@ -345,16 +316,12 @@ class MMR(object):
         :type corporaDir: Path
         :param corpus: name of the directory containing the documents to be summarized.
         :type corpus: str
-        :param summariesDir: summaries directory.
-        :type summariesDir: Path
+        :param candidatesDir: candidate summaries directory.
+        :type candidatesDir: Path
         """
-        # find all documents in corpus
-        files = os.listdir(corporaDir/corpus)
-
         sentences = []	
-
-        for file in files:	
-            sentences = sentences + self.__processFile(corporaDir/corpus/file)
+        for document in documents:	
+            sentences = sentences + self.__processDocument(document)
 
         # calculate TF, IDF and TF-IDF scores
         # TF_w 		= TFs(sentences)
@@ -362,24 +329,31 @@ class MMR(object):
         TF_IDF_w 	= self.__TF_IDF(sentences)	
 
         # build query; set the number of words to include in our query
-        query = self.__buildQuery(sentences, TF_IDF_w, 10)
+        query = self.__processQuery(query)
+        candidate = []
 
-        # pick a sentence that best matches the query	
-        best1sentence = self.bestSentence(sentences, query, IDF_w)		
+        # pick a sentence that best matches the query
+        best1sentence = self.bestSentence(sentences, query, IDF_w).getOriginalWords()
+        candidate.append(best1sentence)
 
+        
+        # TODO: add sumary length control:
         # build summary by adding more relevant sentences
-        summary = self.makeSummary(sentences, best1sentence, query, 100, 0.5, IDF_w)
-        
-        final_summary = ""
-        for sent in summary:
-            final_summary = final_summary + sent.getOriginalWords() + "\n"
-        final_summary = final_summary[:-1]
+        # summary = self.makeSummary(sentences, best1sentence, query, 100, 0.5, IDF_w)
+        # final_summary = ""
+        # for sent in summary:
+        #     final_summary += sent.getOriginalWords() + " "
 
-        mmr_summaries = summariesDir /'MMR'
-        if not os.path.exists(mmr_summaries):
-            os.makedirs(mmr_summaries)	
         
-        with open(os.path.join(mmr_summaries,(str(corpus))),"w") as fileOut: fileOut.write(final_summary)
+        # TODO: write summaries to file if dir not None
+        # mmr_summaries = candidatesDir /'MMR'
+        # if not os.path.exists(mmr_summaries):
+        #     os.makedirs(mmr_summaries)
+        # with open(candidatesDir,"w") as fileOut:
+        #     fileOut.write(final_summary)
+
+        return candidate
+
 
     
     class Sentence(object):
