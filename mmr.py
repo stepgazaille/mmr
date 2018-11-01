@@ -7,7 +7,6 @@ from nltk.corpus import stopwords
 
 # Original implementation: https://github.com/syedhope/Text_Summarization-MMR_and_LexRank
 
-
 class MMR(object):
     """A summarizer implementing the Maximal Marginal Relevence (MMR) summarization algorithm (Carbonell & Goldstein, 1998)."""
 
@@ -21,7 +20,7 @@ class MMR(object):
         """
         Preprocess the files in the document cluster before passing them into the MMR summarizer system. Here the sentences of the document cluster are modelled as sentences after extracting from the files in the folder path.
         :param file_name: file_name, name of the file in the document cluster.
-        :type file_name: str()
+        :type file_name: str
         :return: pre-processed sentences.
         :rtype: list(Sentence)
         """
