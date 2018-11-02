@@ -10,7 +10,7 @@ from summarizers import MMR
 with open('rouge_args.json') as f:
     rouge_args = json.load(f)
 
-# Define directory structure:
+# Define test corpus directory structure:
 baseDir = Path(os.getcwd())
 with open('directories.json') as f:
     directories = json.load(f)
@@ -18,26 +18,38 @@ documentsDir = baseDir / directories['test']['documents']
 queriesDir = baseDir / directories['test']['queries']
 referencesDir = baseDir / directories['test']['references']
 candidatesDir = baseDir / directories['test']['candidates']
+if not candidatesDir.is_dir():
+    os.mkdir(candidatesDir)
+
+# Load the test corpus:
+corpus = Corpus(documentsDir, queriesDir, referencesDir)
 
 
-# Load the corpus fomr files:
-corpus = Corpus(documentsDir, queriesDir, referencesDir, candidatesDir)
+# MMR summarizer evaluation on text corpus:
 candidates = []
 mmr = MMR()
+mmrDir = candidatesDir/'MMR'
+if not mmrDir.is_dir():
+    os.mkdir(mmrDir)
 
 
 # For each query from the corpus:
 for i in range(len(corpus.queries)):
-    # Create a summary candidate:
-    candidate = mmr.summarize(corpus.documents[i], corpus.queries[i], candidatesDir)
-    candidates.append(candidate)
 
-    print('\nQUERY:', corpus.queries[i])
+    topic = corpus.topics[i]
+
+    # Create a summary candidate:
+    candidateFile = topic + '.txt'
+    candidate = mmr.summarize(corpus.documents[i], corpus.queries[i], mmrDir/candidateFile)
+    candidates.append(candidate)
+    
+
+    print("\nQUERY {}: ".format(topic),  corpus.queries[i])
     for document in corpus.documents[i]:
-        print('\tTITLE\t:', document.title)
-        print('\tTEXT\t:', document.text[:90],"...")
-    print('\tSUM:\t', candidate)
-    print('\tREF:\t', corpus.references[i])
+        print("\tTITLE\t:", document.title)
+        print("\tTEXT\t:", document.text[:90],"...")
+    print("\tSUM:\t", candidate)
+    print("\tREF:\t", corpus.references[i])
 
 
 

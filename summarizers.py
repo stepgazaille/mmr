@@ -306,8 +306,8 @@ class MMR(object):
         return MMR_SCORE
 
 
-    # def summarize(self, corporaDir=None, corpus=None, summariesDir=None):
-    def summarize(self, documents=None, query=None, candidatesDir=None):
+
+    def summarize(self, documents, query, candidateFile=None):
         """
         Generates a summary of the documents located in the corporaDir/corpus directory.
         The generated summary is outputed to the summariesDir directory.
@@ -316,25 +316,30 @@ class MMR(object):
         :type corporaDir: Path
         :param corpus: name of the directory containing the documents to be summarized.
         :type corpus: str
-        :param candidatesDir: candidate summaries directory.
-        :type candidatesDir: Path
+        :param candidateFile: path and file name where to output the candidate summary. If None is provided then no file is created or updated.
+        :type candidateFile: Path
+        :return: the candidate summary
+        :rtype: list(str)
         """
-        sentences = []	
+
+        candidate = []
+
+        allSentences = []	
         for document in documents:	
-            sentences = sentences + self.__processDocument(document)
+            allSentences += self.__processDocument(document)
 
         # calculate TF, IDF and TF-IDF scores
         # TF_w 		= TFs(sentences)
-        IDF_w 		= self.__IDFs(sentences)
-        TF_IDF_w 	= self.__TF_IDF(sentences)	
+        IDF_w 		= self.__IDFs(allSentences)
+        TF_IDF_w 	= self.__TF_IDF(allSentences)	
 
         # build query; set the number of words to include in our query
         query = self.__processQuery(query)
-        candidate = []
+        
 
         # pick a sentence that best matches the query
-        best1sentence = self.bestSentence(sentences, query, IDF_w).getOriginalWords()
-        candidate.append(best1sentence)
+        bestSentence = self.bestSentence(allSentences, query, IDF_w).getOriginalWords()
+        candidate.append(bestSentence)
 
         
         # TODO: add sumary length control:
@@ -351,6 +356,12 @@ class MMR(object):
         #     os.makedirs(mmr_summaries)
         # with open(candidatesDir,"w") as fileOut:
         #     fileOut.write(final_summary)
+
+        
+        if candidateFile:
+            with open(candidateFile, 'w') as f:
+                for sentence in candidate:
+                    f.write("%s\n" % sentence)
 
         return candidate
 

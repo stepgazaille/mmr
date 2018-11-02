@@ -7,7 +7,7 @@ from models import Document
 class Corpus(object):
     """A data loader for the test corpus."""
 
-    def __init__(self, documentsDir=None, queriesDir=None, referencesDir=None, candidatesDir=None):
+    def __init__(self, documentsDir, queriesDir, referencesDir):
         """
         Constructor.
         :param documentsDir:
@@ -16,8 +16,6 @@ class Corpus(object):
         :type queriesDir: Path
         :param referencesDir:
         :type referencesDir: Path
-        :param candidatesDir:
-        :type candidatesDir: Path
         """
         # Reference list must respect the pythonrouge evaluation tool input format.
         # This in turns "imposes" a certain format on the documents and queries list
@@ -28,17 +26,21 @@ class Corpus(object):
         self.documentsDir = documentsDir
         self.queriesDir = queriesDir
         self.referencesDir = referencesDir
-        self.candidatesDir = candidatesDir
+        
         self.documents = []
         self.queries = []
         self.references = []
+        self.topics = []
 
         
         for flatFile in sorted(os.listdir(self.documentsDir)):
 
+            # Define the topic:
+            topic = flatFile.replace(".csv", "")
+            self.topics.append(topic)
+
             # Load topic's documents:
             df = pd.read_csv(self.documentsDir/flatFile)
-            topic = flatFile.replace(".csv", "")
             topicDocuments = []
             for i, row in df.iterrows():
                 topicDocuments.append(Document(row['TITLE'], row['TEXT']))

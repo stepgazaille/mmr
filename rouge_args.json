@@ -3,7 +3,7 @@
     "n_gram": 2,
     "ROUGE_SU4": true,
     "ROUGE_L": false,
-    "recall_only": true,
+    "recall_only": false,
     "stemming": true,
     "stopwords": true,
     "word_level": true,
