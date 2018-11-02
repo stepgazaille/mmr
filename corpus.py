@@ -30,14 +30,14 @@ class Corpus(object):
         self.documents = []
         self.queries = []
         self.references = []
-        self.topics = []
+        self.documentSetNames = []
 
         
         for flatFile in sorted(os.listdir(self.documentsDir)):
 
-            # Define the topic:
-            topic = flatFile.replace(".csv", "")
-            self.topics.append(topic)
+            # Define the documents set:
+            documentSetName = flatFile.replace(".csv", "")
+            self.documentSetNames.append(documentSetName)
 
             # Load topic's documents:
             df = pd.read_csv(self.documentsDir/flatFile)
@@ -48,7 +48,7 @@ class Corpus(object):
 
 
             # Load topic's query:
-            fileName = topic + ".txt"
+            fileName = documentSetName + ".txt"
             if Path(self.queriesDir/fileName).is_file:
                 # Query is the first line of text from the query file:
                 with open(self.queriesDir/fileName) as f:

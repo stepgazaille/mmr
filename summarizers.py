@@ -79,17 +79,15 @@ class MMR(object):
 
         # for every sentence in document cluster
         for sent in sentences:
-            # retrieve word frequencies from sentence object	
-            wordFreqs = sent.getWordFreq()
 
             # for every word
-            for word in wordFreqs.keys():
+            for word in sent.wordFrequencies.keys():
                 # if word already present in the dictonary
                 if tfs.get(word, 0) != 0:
-                    tfs[word] = tfs[word] + wordFreqs[word]
+                    tfs[word] = tfs[word] + sent.wordFrequencies[word]
                 # # else if word is being added for the first time
                 else:
-                    tfs[word] = wordFreqs[word]	
+                    tfs[word] = sent.wordFrequencies[word]	
         return tfs
 
 
@@ -112,12 +110,12 @@ class MMR(object):
         for sent in sentences:
             
             # every word in a sentence
-            preProcWords = sent.getPreProWords()
+            preProcWords = sent.preproWords
             for word in preProcWords:
             # for word in sent.getPreProWords():
 
                 # not to calculate a word's IDF value more than once
-                if sent.getWordFreq().get(word, 0) != 0:
+                if sent.wordFrequencies.get(word, 0) != 0:
                     words[word] = words.get(word, 0)+ 1
 
         # for each word in words
@@ -183,11 +181,11 @@ class MMR(object):
         numerator = 0
         denominator = 0	
         
-        for word in sentence2.getPreProWords():		
-            numerator+= sentence1.getWordFreq().get(word,0) * sentence2.getWordFreq().get(word,0) *  IDF_w.get(word,0) ** 2
+        for word in sentence2.preproWords:		
+            numerator+= sentence1.wordFrequencies.get(word,0) * sentence2.wordFrequencies.get(word,0) *  IDF_w.get(word,0) ** 2
 
-        for word in sentence1.getPreProWords():
-            denominator+= ( sentence1.getWordFreq().get(word,0) * IDF_w.get(word,0) ) ** 2
+        for word in sentence1.preproWords:
+            denominator+= ( sentence1.wordFrequencies.get(word,0) * IDF_w.get(word,0) ) ** 2
 
         # check for divide by zero cases and return back minimal similarity
         try:
@@ -209,7 +207,7 @@ class MMR(object):
         return self.Sentence("query", filteredQuery, query)
 
 
-    def bestSentence(self, sentences, query, IDF):
+    def __getBestSentence(self, sentences, query, IDF):
         """
         Find the best sentence in reference to the query.
         :param sentences: sentences of the document cluster.
@@ -236,17 +234,17 @@ class MMR(object):
         return best_sentence
 
     
-    def makeSummary(self, sentences, best_sentence, query, summary_length, lambta, IDF):
+    def __makeSummary(self, sentences, bestSentence, query, nbWords, lambta, IDF):
         """
         Create the summary set of a desired number of words.
         :param sentences: sentences of the document cluster.
         :type sentences: list(Sentence)
-        :param best_sentence: best sentence in the document cluster.
-        :type best_sentence: Sentence
+        :param bestSentence: best sentence in the document cluster.
+        :type bestSentence: Sentence
         :param query: reference query.
         :type query: Sentence
-        :param summary_length: desired number of words for the summary.
-        :type summary_length: int
+        :param nbWords: desired number of words for the summary.
+        :type nbWords: int
         :param lambta: lambda value of the MMR formula.
         :type lambta: float
         :param IDF: IDF value of words of the document cluster.
@@ -255,23 +253,28 @@ class MMR(object):
         :rtype: Sentence
         """
 
-        summary = [best_sentence]
-        sum_len = len(best_sentence.getPreProWords())
+        selectedSentences = [bestSentence]
+        sum_len = bestSentence.wordCount
+        
 
         MMRval={}
 
-        # keeping adding sentences until number of words exceeds summary length
-        while (sum_len < summary_length):	
+        # add sentences until number of words exceeds summary length
+        while (sum_len < nbWords):	
             MMRval={}		
 
             for sent in sentences:
-                MMRval[sent] = self.__MMRScore(sent, query, summary, lambta, IDF)
+                MMRval[sent] = self.__MMRScore(sent, query, selectedSentences, lambta, IDF)
 
             maxxer = max(MMRval, key=MMRval.get)
-            summary.append(maxxer)
+            selectedSentences.append(maxxer)
             sentences.remove(maxxer)
-            sum_len += len(maxxer.getPreProWords())	
+            sum_len += maxxer.wordCount
 
+
+        summary = []
+        for sentence in selectedSentences:
+            summary.append(sentence.originalWords)
         return summary
 
 
@@ -307,7 +310,7 @@ class MMR(object):
 
 
 
-    def summarize(self, documents, query, candidateFile=None):
+    def summarize(self, documents, query, summaryFile=None, nbWords=10):
         """
         Generates a summary of the documents located in the corporaDir/corpus directory.
         The generated summary is outputed to the summariesDir directory.
@@ -316,13 +319,11 @@ class MMR(object):
         :type corporaDir: Path
         :param corpus: name of the directory containing the documents to be summarized.
         :type corpus: str
-        :param candidateFile: path and file name where to output the candidate summary. If None is provided then no file is created or updated.
-        :type candidateFile: Path
+        :param summaryFile: path and file name where to output the candidate summary. If None is provided then no file is created or updated.
+        :type summaryFile: Path
         :return: the candidate summary
         :rtype: list(str)
         """
-
-        candidate = []
 
         allSentences = []	
         for document in documents:	
@@ -333,37 +334,21 @@ class MMR(object):
         IDF_w 		= self.__IDFs(allSentences)
         TF_IDF_w 	= self.__TF_IDF(allSentences)	
 
+
         # build query; set the number of words to include in our query
         query = self.__processQuery(query)
         
 
         # pick a sentence that best matches the query
-        bestSentence = self.bestSentence(allSentences, query, IDF_w).getOriginalWords()
-        candidate.append(bestSentence)
-
+        bestSentence = self.__getBestSentence(allSentences, query, IDF_w)
+        summary = self.__makeSummary(allSentences, bestSentence, query, nbWords, 0.5, IDF_w)
         
-        # TODO: add sumary length control:
-        # build summary by adding more relevant sentences
-        # summary = self.makeSummary(sentences, best1sentence, query, 100, 0.5, IDF_w)
-        # final_summary = ""
-        # for sent in summary:
-        #     final_summary += sent.getOriginalWords() + " "
 
-        
-        # TODO: write summaries to file if dir not None
-        # mmr_summaries = candidatesDir /'MMR'
-        # if not os.path.exists(mmr_summaries):
-        #     os.makedirs(mmr_summaries)
-        # with open(candidatesDir,"w") as fileOut:
-        #     fileOut.write(final_summary)
+        if summaryFile:
+            with open(summaryFile, 'w') as f:
+                f.write(" ".join(summary))
 
-        
-        if candidateFile:
-            with open(candidateFile, 'w') as f:
-                for sentence in candidate:
-                    f.write("%s\n" % sentence)
-
-        return candidate
+        return summary
 
 
     
@@ -382,35 +367,30 @@ class MMR(object):
             """
             self.docName = docName
             self.preproWords = preproWords
-            self.wordFrequencies = self.sentenceWordFreq()
             self.originalWords = originalWords
-
-        def getDocName(self):
-            return self.docName
-        
-        def getPreProWords(self):
-            return self.preproWords
-        
-        def getOriginalWords(self):
-            return self.originalWords
+            self.wordCount = self.__getWordCount(originalWords)
+            self.wordFrequencies = self.__getWordFreq(preproWords)
 
 
-        def getWordFreq(self):
-            return self.wordFrequencies	
+        @staticmethod
+        def __getWordCount(originalWords):
+            """
+            Count words in original text.
+            """
+            return len(re.sub("[^\w]", " ",  originalWords).split())
         
-        def sentenceWordFreq(self):
+
+        @staticmethod
+        def __getWordFreq(preproWords):
             """
             Create a dictonary of word frequencies for the sentence object.
             :return: dictonary of word frequencies.
             :rtype: dict
             """
             wordFreq = {}
-            for word in self.preproWords:
+            for word in preproWords:
                 if word not in wordFreq.keys():
                     wordFreq[word] = 1
-                else:
-                    # if word in stopwords.words('english'):
-                    # 	wordFreq[word] = 1
-                    # else:			
+                else:		
                     wordFreq[word] = wordFreq[word] + 1
             return wordFreq

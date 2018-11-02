@@ -36,15 +36,18 @@ if not mmrDir.is_dir():
 # For each query from the corpus:
 for i in range(len(corpus.queries)):
 
-    topic = corpus.topics[i]
+    documentSetName = corpus.documentSetNames[i]
 
     # Create a summary candidate:
-    candidateFile = topic + '.txt'
-    candidate = mmr.summarize(corpus.documents[i], corpus.queries[i], mmrDir/candidateFile)
+    candidateFile = documentSetName + '.txt'
+    candidate = mmr.summarize(corpus.documents[i],
+        corpus.queries[i],
+        mmrDir/candidateFile,
+        rouge_args['length'])
     candidates.append(candidate)
     
 
-    print("\nQUERY {}: ".format(topic),  corpus.queries[i])
+    print("\nQUERY {}: ".format(documentSetName),  corpus.queries[i])
     for document in corpus.documents[i]:
         print("\tTITLE\t:", document.title)
         print("\tTEXT\t:", document.text[:90],"...")

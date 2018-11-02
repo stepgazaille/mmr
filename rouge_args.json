@@ -8,7 +8,7 @@
     "stopwords": true,
     "word_level": true,
     "length_limit": true,
-    "length": 50,
+    "length": 10,
     "use_cf": false,
     "cf": 95,
     "scoring_formula": "average",
