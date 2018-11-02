@@ -47,12 +47,12 @@ for i in range(len(corpus.queries)):
     candidates.append(candidate)
     
 
-    print("\nQUERY {}: ".format(documentSetName),  corpus.queries[i])
+    print("\nDOC SET {}".format(documentSetName))
+    print("\tQUERY\t:", corpus.queries[i])
     for document in corpus.documents[i]:
-        print("\tTITLE\t:", document.title)
-        print("\tTEXT\t:", document.text[:90],"...")
-    print("\tSUM:\t", candidate)
-    print("\tREF:\t", corpus.references[i])
+        print("\tDOC\t:", document.text[:90], "...")
+    print("\tSUM\t:", candidate)
+    print("\tREF\t:", corpus.references[i])
 
 
 
