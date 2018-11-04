@@ -234,7 +234,7 @@ class MMR(object):
         return best_sentence
 
     
-    def __makeSummary(self, sentences, bestSentence, query, nbWords, lambta, IDF):
+    def __makeSummary(self, sentences, bestSentence, query, nbWords, lda, IDF):
         """
         Create the summary set of a desired number of words.
         :param sentences: sentences of the document cluster.
@@ -245,8 +245,8 @@ class MMR(object):
         :type query: Sentence
         :param nbWords: desired number of words for the summary.
         :type nbWords: int
-        :param lambta: lambda value of the MMR formula.
-        :type lambta: float
+        :param lda: lambda value of the MMR formula.
+        :type lda: float
         :param IDF: IDF value of words of the document cluster.
         :type IDF: dict
         :return: best sentence among the sentences in the document cluster.
@@ -264,7 +264,7 @@ class MMR(object):
             MMRval={}		
 
             for sent in sentences:
-                MMRval[sent] = self.__MMRScore(sent, query, selectedSentences, lambta, IDF)
+                MMRval[sent] = self.__MMRScore(sent, query, selectedSentences, lda, IDF)
 
             maxxer = max(MMRval, key=MMRval.get)
             selectedSentences.append(maxxer)
@@ -310,7 +310,7 @@ class MMR(object):
 
 
 
-    def summarize(self, documents, query, summaryFile=None, nbWords=10):
+    def summarize(self, documents, query, summaryFile=None, nbWords=100, lda=0.3):
         """
         Generates a summary of the documents located in the corporaDir/corpus directory.
         The generated summary is outputed to the summariesDir directory.
@@ -335,13 +335,13 @@ class MMR(object):
         TF_IDF_w 	= self.__TF_IDF(allSentences)	
 
 
-        # build query; set the number of words to include in our query
+        # preprocess the words to include in our query
         query = self.__processQuery(query)
         
 
         # pick a sentence that best matches the query
         bestSentence = self.__getBestSentence(allSentences, query, IDF_w)
-        summary = self.__makeSummary(allSentences, bestSentence, query, nbWords, 0.5, IDF_w)
+        summary = self.__makeSummary(allSentences, bestSentence, query, nbWords, lda, IDF_w)
         
 
         if summaryFile:

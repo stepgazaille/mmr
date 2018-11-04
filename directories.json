@@ -3,6 +3,6 @@
         "documents": "corpora/test/documents",
         "queries": "corpora/test/queries",
         "references": "corpora/test/references",
-        "candidates": "corpora/test/candidates/"
+        "summaries": "corpora/test/summaries/"
     }    
 }

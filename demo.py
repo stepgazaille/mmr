@@ -17,9 +17,9 @@ with open('directories.json') as f:
 documentsDir = baseDir / directories['test']['documents']
 queriesDir = baseDir / directories['test']['queries']
 referencesDir = baseDir / directories['test']['references']
-candidatesDir = baseDir / directories['test']['candidates']
-if not candidatesDir.is_dir():
-    os.mkdir(candidatesDir)
+summariesDir = baseDir / directories['test']['summaries']
+if not summariesDir.is_dir():
+    os.mkdir(summariesDir)
 
 # Load the test corpus:
 corpus = Corpus(documentsDir, queriesDir, referencesDir)
@@ -28,7 +28,7 @@ corpus = Corpus(documentsDir, queriesDir, referencesDir)
 # MMR summarizer evaluation on text corpus:
 candidates = []
 mmr = MMR()
-mmrDir = candidatesDir/'MMR'
+mmrDir = summariesDir/'MMR'
 if not mmrDir.is_dir():
     os.mkdir(mmrDir)
 
@@ -38,21 +38,22 @@ for i in range(len(corpus.queries)):
 
     documentSetName = corpus.documentSetNames[i]
 
-    # Create a summary candidate:
-    candidateFile = documentSetName + '.txt'
-    candidate = mmr.summarize(corpus.documents[i],
+    # Create a summary:
+    summaryFile = documentSetName + '.txt'
+    summary = mmr.summarize(corpus.documents[i],
         corpus.queries[i],
-        mmrDir/candidateFile,
-        rouge_args['length'])
-    candidates.append(candidate)
+        mmrDir/summaryFile,
+        rouge_args['length'],
+        lda=0.9)
+    candidates.append(summary)
     
 
     print("\nDOC SET {}".format(documentSetName))
-    print("\tQUERY\t:", corpus.queries[i])
+    print("\tQUERY\t", corpus.queries[i])
     for document in corpus.documents[i]:
-        print("\tDOC\t:", document.text[:90], "...")
-    print("\tSUM\t:", candidate)
-    print("\tREF\t:", corpus.references[i])
+        print("\tDOC\t", document.text[:90], "...")
+    print("\tSUM\t", summary)
+    print("\tREF\t", corpus.references[i])
 
 
 
@@ -76,7 +77,7 @@ rouge = Pythonrouge(summary=candidates, reference=corpus.references,
                     p=rouge_args['p'])
 
 
-print("\nEVALUATION:")
+print("\nEVALUATION")
 score = rouge.calc_score()
 for key in score.keys():
-    print("\t" + key + ":\t{}".format(score[key]))
+    print("\t" + key + "\t {}".format(score[key]))
