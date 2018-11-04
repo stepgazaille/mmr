@@ -10,14 +10,30 @@ Use the following procedure to install all requirements:
 2. Create new virtual environment:
 ```
 cd query_based_summarization
-conda env create
+conda env create qbsum -f environment.yml
 ```
 
 
-## Usage
+3. Install the qbsum package:
+
+.. code:: shell
+
+    cd query_based_summarization
+    conda activate qbsum
+
+    # Normal installation:
+    pip install .
+
+    # Editable installation:
+    pip install -e .
+
+
+
+
+## Virtual environment management
 To activate the project's virtual environment, use:
 ```
-source activate qbmd
+source activate qbsum
 ```
 
 To launch Jupyter to manage and execute notebooks, use:
@@ -28,20 +44,18 @@ Press `CTRL+C` to stop execution.
 
 To deactivate the project's virtual environment, use:
 ```
-source deactivate
+conda deactivate
 ```
 
 To remove the project's virtual environment, use:
 ```
-conda remove -y -n qbmd --all
+conda remove -y -n qbsum --all
 ```
 
 To update the project's virtual environment, use:
 ```
-conda env update -n qbmd -f environment.yml
+conda env update -n qbsum -f environment.yml
 ```
-
-
 
 
 ## Install NLTK packages
@@ -53,14 +67,13 @@ To install all NLTK packages:
 ```
 import nltk
 nltk.download()
+
 ```
 The "NLTK Downloader" window will appear.
 4. Select the "All packages" option.
 5. Click on the "Download" button and wait for download completion.
 6. Close the "NLTK Downloader" window.
 7. Close the Python interpreter by typing the following command in the terminal: quit()
-
-
 
 
 

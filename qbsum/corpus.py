@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 import pandas as pd
-from models import Document
+from qbsum.models import Document
 
 
 class Corpus(object):
