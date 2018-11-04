@@ -1,5 +1,5 @@
 # Query-based summarization
-A set set of query-based summarization baseline algorithms
+A set set of query-based summarization algorithms.
 
 ## Requirements
 Requires Anaconda Python 3 distribution.
@@ -9,7 +9,7 @@ Use the following procedure to install all requirements:
 
 2. Create new virtual environment:
 ```
-cd query_based_summarization
+cd qbsum
 conda env create qbsum -f environment.yml
 ```
 
@@ -18,7 +18,7 @@ conda env create qbsum -f environment.yml
 
 .. code:: shell
 
-    cd query_based_summarization
+    cd qbsum
     conda activate qbsum
 
     # Normal installation:
