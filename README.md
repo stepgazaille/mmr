@@ -38,14 +38,10 @@ To install all NLTK packages:
 3. Excute the following command in the Python interpreter:
 ```
 import nltk
-nltk.download('punkt')
+nltk.download(['punkt', 'stopwords'])
 ```
 
-The "NLTK Downloader" window will appear.
-4. Select the "All packages" option.
-5. Click on the "Download" button and wait for download completion.
-6. Close the "NLTK Downloader" window.
-7. Close the Python interpreter by typing the following command in the terminal: quit()
+4. Close the Python interpreter by typing the following command in the terminal: quit()
 
 
 ## Virtual environment management
