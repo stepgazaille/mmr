@@ -1,3 +1,4 @@
+import subprocess
 import json
 from pythonrouge.pythonrouge import Pythonrouge
 
@@ -86,7 +87,11 @@ rouge = Pythonrouge(summary=candidates, reference=references,
                     favor=rouge_args['favor'],
                     p=rouge_args['p'])
                     
+try:
+    score = rouge.calc_score()
+except subprocess.CalledProcessError as e:
+    print(str(e.output))
+    
 
-score = rouge.calc_score()
 for key in score.keys():
     print(key + ":\t{}".format(score[key]))

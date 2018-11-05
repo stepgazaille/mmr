@@ -13,27 +13,45 @@ cd qbsum
 conda env create qbsum -f environment.yml
 ```
 
-
 3. Install the qbsum package:
+```
+cd qbsum
+conda activate qbsum
 
-.. code:: shell
+# Normal installation:
+pip install .
 
-    cd qbsum
-    conda activate qbsum
+# Editable installation:
+pip install -e .
+```
 
-    # Normal installation:
-    pip install .
+4. The pythonrouge package requires the Perl XMLParser module:
+``` 
+sudo apt-get install libxml-parser-perl
+```
 
-    # Editable installation:
-    pip install -e .
+### Install NLTK packages
+Some NLTK packages are required to execute the demo.
+To install all NLTK packages:
+1. Activate the virtual environment.
+2. Open the Python interpreter by typing the following command in the terminal: `python`
+3. Excute the following command in the Python interpreter:
+```
+import nltk
+nltk.download('punkt')
+```
 
-
+The "NLTK Downloader" window will appear.
+4. Select the "All packages" option.
+5. Click on the "Download" button and wait for download completion.
+6. Close the "NLTK Downloader" window.
+7. Close the Python interpreter by typing the following command in the terminal: quit()
 
 
 ## Virtual environment management
 To activate the project's virtual environment, use:
 ```
-source activate qbsum
+conda activate qbsum
 ```
 
 To launch Jupyter to manage and execute notebooks, use:
@@ -56,25 +74,6 @@ To update the project's virtual environment, use:
 ```
 conda env update -n qbsum -f environment.yml
 ```
-
-
-## Install NLTK packages
-Some NLTK packages are required to execute the demo.
-To install all NLTK packages:
-1. Activate the virtual environment.
-2. Open the Python interpreter by typing the following command in the terminal: `python`
-3. Excute the following command in the Python interpreter:
-```
-import nltk
-nltk.download()
-
-```
-The "NLTK Downloader" window will appear.
-4. Select the "All packages" option.
-5. Click on the "Download" button and wait for download completion.
-6. Close the "NLTK Downloader" window.
-7. Close the Python interpreter by typing the following command in the terminal: quit()
-
 
 
 ## Test corpus
