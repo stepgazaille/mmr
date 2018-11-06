@@ -40,7 +40,7 @@ class Corpus(object):
             self.documentSetNames.append(documentSetName)
 
             # Load topic's documents:
-            df = pd.read_csv(self.documentsDir/flatFile)
+            df = pd.read_csv(self.documentsDir/flatFile, encoding='utf-8-sig')
             topicDocuments = []
             for i, row in df.iterrows():
                 topicDocuments.append(Document(row['TITLE'], row['TEXT']))
@@ -51,13 +51,13 @@ class Corpus(object):
             fileName = documentSetName + ".txt"
             if Path(self.queriesDir/fileName).is_file:
                 # Query is the first line of text from the query file:
-                with open(self.queriesDir/fileName) as f:
+                with open(self.queriesDir/fileName, encoding='utf-8-sig') as f:
                     self.queries.append(f.readline())
             
             # Load topic's reference summary:
             topicReferences = []
             if Path(self.referencesDir/fileName).is_file:
-                with open(self.referencesDir/fileName) as f:
+                with open(self.referencesDir/fileName, encoding='utf-8-sig') as f:
                     # Currently, references consists of the first line of text from the reference file:
                     # TODO: add support for multi-sentence references:
                     topicReferences.append([f.readline()])

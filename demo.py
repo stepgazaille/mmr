@@ -87,10 +87,11 @@ rouge = Pythonrouge(summary=candidates, reference=corpus.references,
 # Evaluate candidate summaries:
 try:
     score = rouge.calc_score()
-except subprocess.CalledProcessError as e:
-    print(str(e.output))
+    print("\nEVALUATION")
+    for key in score.keys():
+        print("\t" + key + "\t {}".format(score[key]))
+except Exception as e:
+    print(e)
 
-print("\nEVALUATION")
-for key in score.keys():
-    print("\t" + key + "\t {}".format(score[key]))
+
 

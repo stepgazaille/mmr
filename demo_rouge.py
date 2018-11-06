@@ -86,12 +86,12 @@ rouge = Pythonrouge(summary=candidates, reference=references,
                     samples=rouge_args['samples'],
                     favor=rouge_args['favor'],
                     p=rouge_args['p'])
-                    
+
+
 try:
     score = rouge.calc_score()
-except subprocess.CalledProcessError as e:
-    print(str(e.output))
-    
-
-for key in score.keys():
-    print(key + ":\t{}".format(score[key]))
+    print("\nEVALUATION")
+    for key in score.keys():
+        print("\t" + key + "\t {}".format(score[key]))
+except Exception as e:
+    print(e)

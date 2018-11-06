@@ -30,19 +30,6 @@ pip install -e .
 sudo apt-get install libxml-parser-perl
 ```
 
-### Install NLTK packages
-Some NLTK packages are required to execute the demo.
-To install all NLTK packages:
-1. Activate the virtual environment.
-2. Open the Python interpreter by typing the following command in the terminal: `python`
-3. Excute the following command in the Python interpreter:
-```
-import nltk
-nltk.download(['punkt', 'stopwords'])
-```
-
-4. Close the Python interpreter by typing the following command in the terminal: quit()
-
 
 ## Virtual environment management
 To activate the project's virtual environment, use:

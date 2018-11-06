@@ -3,8 +3,17 @@ import math
 import string
 import re
 import nltk
-from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+try:
+    from nltk.corpus import stopwords
+except LookupError:
+    nltk.download('stopwords')
+    from nltk.corpus import stopwords
+
 
 # Original implementation: https://github.com/syedhope/Text_Summarization-MMR_and_LexRank
 
