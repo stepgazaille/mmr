@@ -1,65 +1,70 @@
 import os
 from pathlib import Path
 import pandas as pd
-from qbsum.models import Document
+import spacy
 
 
 class Corpus(object):
     """A data loader for the test corpus."""
 
-    def __init__(self, documentsDir, queriesDir, referencesDir):
+    def __init__(self, documents_dir, queries_dir, references_dir):
         """
         Constructor.
-        :param documentsDir:
-        :type documentsDir: Path
-        :param queriesDir:
-        :type queriesDir: Path
-        :param referencesDir:
-        :type referencesDir: Path
+        :param documents_dir:
+        :type documents_dir: Path
+        :param queries_dir:
+        :type queries_dir: Path
+        :param references_dir:
+        :type references_dir: Path
         """
         # Reference list must respect the pythonrouge evaluation tool input format.
-        # This in turns "imposes" a certain format on the documents and queries list
-        # because else it becomes difficult to match topics between lists.
+        # This in turns imposes a certain format on the documents and queries lists
+        # because else it becomes difficult to match document sets between lists.
         # See demo_rouge.py file for more details on
         # the pythonrouge evaluation tool input format.
 
-        self.documentsDir = documentsDir
-        self.queriesDir = queriesDir
-        self.referencesDir = referencesDir
+        nlp = spacy.load('en_core_web_sm')
+        self.documents_dir = documents_dir
+        self.queries_dir = queries_dir
+        self.references_dir = references_dir
         
-        self.documents = []
+        self.document_sets = []
         self.queries = []
         self.references = []
-        self.documentSetNames = []
+        self.document_set_names = []
 
         
-        for flatFile in sorted(os.listdir(self.documentsDir)):
+        for flat_file in sorted(os.listdir(self.documents_dir)):
 
             # Define the documents set:
-            documentSetName = flatFile.replace(".csv", "")
-            self.documentSetNames.append(documentSetName)
+            document_set_name = flat_file.replace(".csv", "")
+            self.document_set_names.append(document_set_name)
 
-            # Load topic's documents:
-            df = pd.read_csv(self.documentsDir/flatFile, encoding='utf-8-sig')
-            topicDocuments = []
+            # Load documents:
+            df = pd.read_csv(self.documents_dir/flat_file, encoding='utf-8-sig')
+            document_set = []
             for i, row in df.iterrows():
-                topicDocuments.append(Document(row['TITLE'], row['TEXT']))
-            self.documents.append(topicDocuments)
+                document = [row['TITLE']]
+                body = nlp(row['TEXT'])
+                for sentence in body.sents:
+                    document.append(sentence.text)
+                document_set.append(document)
+            self.document_sets.append(document_set)
 
 
-            # Load topic's query:
-            fileName = documentSetName + ".txt"
-            if Path(self.queriesDir/fileName).is_file:
+            # Load queries:
+            file_name = document_set_name + ".txt"
+            if Path(self.queries_dir/file_name).is_file:
                 # Query is the first line of text from the query file:
-                with open(self.queriesDir/fileName, encoding='utf-8-sig') as f:
+                with open(self.queries_dir/file_name, encoding='utf-8-sig') as f:
                     self.queries.append(f.readline())
             
             # Load topic's reference summary:
-            topicReferences = []
-            if Path(self.referencesDir/fileName).is_file:
-                with open(self.referencesDir/fileName, encoding='utf-8-sig') as f:
+            doc_set_references = []
+            if Path(self.references_dir/file_name).is_file:
+                with open(self.references_dir/file_name, encoding='utf-8-sig') as f:
                     # Currently, references consists of the first line of text from the reference file:
                     # TODO: add support for multi-sentence references:
-                    topicReferences.append([f.readline()])
+                    doc_set_references.append([f.readline()])
                 
-                self.references.append(topicReferences)
+                self.references.append(doc_set_references)

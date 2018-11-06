@@ -13,10 +13,14 @@ cd qbsum
 conda env create qbsum -f environment.yml
 ```
 
-3. Install the qbsum package:
+3. Activate the virtual environment:
+```
+conda activate qbsum
+```
+
+4. Install the qbsum package:
 ```
 cd qbsum
-conda activate qbsum
 
 # Normal installation:
 pip install .
@@ -25,7 +29,13 @@ pip install .
 pip install -e .
 ```
 
-4. The pythonrouge package requires the Perl XMLParser module:
+5. Install spaCy model:
+``` 
+python -m spacy download en
+```
+
+
+5. The pythonrouge package requires the Perl XMLParser module:
 ``` 
 sudo apt-get install libxml-parser-perl
 ```

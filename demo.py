@@ -39,22 +39,22 @@ mmr = MMR()
 # For each documents set in corpus:
 for i in range(len(corpus.queries)):
 
-    documentSetName = corpus.documentSetNames[i]
+    document_set_name = corpus.document_set_names[i]
 
     # Create a summary:
-    summaryFile = documentSetName + '.txt'
-    summary = mmr.summarize(corpus.documents[i],
+    summary_file = document_set_name + '.txt'
+    summary = mmr.summarize(corpus.document_sets[i],
         corpus.queries[i],
-        mmrDir/summaryFile,
-        nbWords=10,
+        mmrDir/summary_file,
+        max_length=50,
         lda=0.9)
     candidates.append(summary)
     
 
-    print("\nDOC SET {}".format(documentSetName))
+    print("\nDOC SET {}".format(document_set_name))
     print("\tQUERY\t", corpus.queries[i])
-    for document in corpus.documents[i]:
-        print("\tDOC\t", document.text[:90], "...")
+    for document in corpus.document_sets[i]:
+        print("\tDOC\t", document[0], "...")
     print("\tSUM\t", summary)
     print("\tREF\t", corpus.references[i])
 

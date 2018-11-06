@@ -2,11 +2,7 @@ import subprocess
 import json
 from pythonrouge.pythonrouge import Pythonrouge
 
-# ROUGE evaluates all system summaries and its corresponding reference
-# one summary at the time or multiple summaries at once.
-# Summary should be double list, in each list has each summary.
-# Reference summaries should be triple list because some of reference
-# has multiple gold summaries.
+
 
 # Original implementation: https://github.com/tagucci/pythonrouge/blob/master/example.py
 
@@ -14,14 +10,14 @@ with open('rouge_args.json') as f:
     rouge_args = json.load(f)
 
 
-# Corpus.candidates implementations must return a candidates[][] list using the following structure:
+# Candidate summaries must be double lists of the following structure:
 candidates = [
-    [   # A summary about one topic is a list of sentences:
+    [   # A summary of a document set is a list of sentences:
         "Great location, very good selection of food for breakfast buffet.",
         "Stunning food, amazing service.",
         "The food is excellent and the service great."
     ],
-    [   # A summary about a second topic:
+    [   # A summary of a second document set:
         "The keyboard, more than 90% standard size, is just large enough.",
         "Surprisingly readable screen for the size.",
         "Smaller size videos play even smoother."
@@ -30,9 +26,9 @@ candidates = [
 
 
 
-# Loader.getReferences() implementations must return a references[][][] list using the following structure:
+# Reference summaries must be triple lists of the following structure:
 references = [
-                [   # 3 references for first topic:
+                [   # 3 references for a first document set:
                     [
                         "Food was excellent with a wide range of choices and good services.",
                         "It was a bit expensive though."
@@ -45,7 +41,7 @@ references = [
                         "There were also many choices to eat in the near vicinity of the hotel."
                     ]
                 ],
-                [   # 4 references for second topic:
+                [   # 4 references for a second document set:
                     [
                         "The size is great and allows for excellent portability.",
                         "Makes it exceptionally easy to tote around, and the keyboard is fairly big considering the size of this netbook."

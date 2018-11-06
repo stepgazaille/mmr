@@ -5,10 +5,11 @@ setup(name='qbsum',
       description='A set of query-based summarization algorithms',
       author='Stephane Gazaille',
       author_email='stephane.gazaille@croesus.com',
-      url='https://github.com/stepgazaille/query_based_summarization',
+      url='https://github.com/stepgazaille/qbsum',
       packages=find_packages(exclude=['tests']),
       zip_safe=True,
       install_requires=[
-        'nltk>=3.3.0'
+        'pandas>=0.23.4',
+        'spacy>=2.0.16'
         ]
       )
