@@ -46,15 +46,13 @@ for i in range(len(corpus.queries)):
     summary = mmr.summarize(corpus.document_sets[i],
         corpus.queries[i],
         mmrDir/summary_file,
-        max_length=50,
+        max_length=10,
         lda=0.9)
     candidates.append(summary)
     
 
     print("\nDOC SET {}".format(document_set_name))
     print("\tQUERY\t", corpus.queries[i])
-    for document in corpus.document_sets[i]:
-        print("\tDOC\t", document[0], "...")
     print("\tSUM\t", summary)
     print("\tREF\t", corpus.references[i])
 

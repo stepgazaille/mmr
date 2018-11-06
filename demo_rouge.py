@@ -86,7 +86,7 @@ rouge = Pythonrouge(summary=candidates, reference=references,
 
 try:
     score = rouge.calc_score()
-    print("\nEVALUATION")
+    print("EVALUATION")
     for key in score.keys():
         print("\t" + key + "\t {}".format(score[key]))
 except Exception as e:
