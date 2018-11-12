@@ -44,7 +44,7 @@ class MMR(object):
             selected[next_selected] = len(selected)
 
         if summary_file:
-            with open(summary_file, 'w', encoding='utf-8-sig') as f:
+            with open(str(summary_file), 'w', encoding='utf-8-sig') as f:
                 f.write(" ".join(selected))
 
         return list(selected)

@@ -33,8 +33,7 @@ class Corpus(object):
         self.references = []
         self.document_set_names = []
 
-        
-        for flat_file in sorted(os.listdir(self.documents_dir)):
+        for flat_file in sorted(os.listdir(str(self.documents_dir))):
 
             # Define the documents set:
             document_set_name = flat_file.replace(".csv", "")
@@ -56,13 +55,13 @@ class Corpus(object):
             file_name = document_set_name + ".txt"
             if Path(self.queries_dir/file_name).is_file:
                 # Query is the first line of text from the query file:
-                with open(self.queries_dir/file_name, encoding='utf-8-sig') as f:
+                with open(str(self.queries_dir/file_name), encoding='utf-8-sig') as f:
                     self.queries.append(f.readline())
             
             # Load topic's reference summary:
             doc_set_references = []
             if Path(self.references_dir/file_name).is_file:
-                with open(self.references_dir/file_name, encoding='utf-8-sig') as f:
+                with open(str(self.references_dir/file_name), encoding='utf-8-sig') as f:
                     # Currently, references consists of the first line of text from the reference file:
                     # TODO: add support for multi-sentence references:
                     doc_set_references.append([f.readline()])
