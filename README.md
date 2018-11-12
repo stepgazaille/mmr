@@ -20,6 +20,12 @@ Pythonrouge package requires the Perl XMLParser module:
 sudo apt-get install libxml-parser-perl
 ```
 
+## Running tests
+Use the following command to run unit tests:
+``` 
+python -m unittest
+```
+
 
 ## Test corpus
 A small corpus built using articles from [The Guardian](https://www.theguardian.com/international) is provided for development and testing.
