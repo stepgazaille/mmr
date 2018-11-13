@@ -4,10 +4,9 @@ dist: trusty
 before_install:
   - sudo apt-get -qq update
 python:
-  - "3.4"
-  - "3.5"
-  - "3.6"
-  - "3.7"
+  - '3.5'
+  - '3.6'
+  - '3.7-dev'
 install:
   - pip install .
   - python -m spacy download en

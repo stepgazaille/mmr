@@ -14,7 +14,7 @@ class MMR(object):
         self.__nlp = spacy.load('en')
 
 
-    def summarize(self, document_set, query, summary_file=None, max_length=100, lda=0.3):
+    def summarize(self, document_set, query, summary_file=None, max_length=10, lda=0.9):
         """
         Generates a summary of the documents in a set with respect to a particular query.
         :param document_set: set of documents to be summarized.
