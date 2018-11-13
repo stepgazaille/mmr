@@ -8,12 +8,8 @@ setup(name='qbsum',
       url='https://github.com/stepgazaille/qbsum',
       packages=find_packages(exclude=['tests']),
       zip_safe=True,
-      dependency_links = [
-        'git+https://github.com/stepgazaille/pythonrouge.git#egg=pythonrouge'
-        ],
       install_requires=[
         'pandas>=0.23.4',
-        'spacy>=2.0.16',
-        'pythonrouge'
+        'spacy>=2.0.16'
         ]
       )

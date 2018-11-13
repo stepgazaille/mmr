@@ -1,0 +1,19 @@
+sudo: required
+language: python
+dist: trusty
+before_install:
+  - sudo apt-get -qq update
+python:
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "3.7"
+install:
+  - pip install .
+  - python -m spacy download en
+script:
+  - python -m unittest
+branches:
+  only:
+    - master
+    - dev

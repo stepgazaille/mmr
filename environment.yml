@@ -1,8 +1,0 @@
-name: qbsum
-dependencies:
-  - python=3.6.5
-  - jupyter=1.0.0
-  - pylint
-  - rope
-  - pip:
-    - 'git+https://github.com/tagucci/pythonrouge.git'    

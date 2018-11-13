@@ -3,11 +3,15 @@ A set set of query-based summarization algorithms.
 
 
 ## Installation
-Requires Python 3 distribution.
-Install qbsum:
+Requires Python >= 3.4.
 ```
 cd qbsum
-python setup.py install
+
+# Normal installation:
+pip install .
+
+# Editable installation:
+pip install -e .
 ``` 
 
 Install spaCy model:
@@ -15,10 +19,6 @@ Install spaCy model:
 python -m spacy download en
 ```
 
-Pythonrouge package requires the Perl XMLParser module:
-``` 
-sudo apt-get install libxml-parser-perl
-```
 
 ## Running tests
 Use the following command to run unit tests:
