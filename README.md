@@ -1,5 +1,6 @@
 # Query-based summarization
 [![Build Status](https://travis-ci.org/stepgazaille/qbsum.svg?branch=master)](https://travis-ci.org/stepgazaille/qbsum)
+
 A set set of query-based summarization algorithms.
 
 ## Installation
