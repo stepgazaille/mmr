@@ -23,7 +23,6 @@ class TestSummarizer(unittest.TestCase):
 
     def test_summary_type(self):
         summary = self.mmr.summarize(self.corpus.document_sets[0], self.corpus.queries[0])
-        print("hello")
         self.assertIsInstance(summary, list)
 
     def test_sum_sentence_type(self):
@@ -32,10 +31,11 @@ class TestSummarizer(unittest.TestCase):
 
     def test_similar_sentences(self):
         score = self.mmr._MMR__similarity("Here's a sentence", "Here's a sentence")
-        self.assertTrue(score > 0.6)
+        self.assertTrue(score == 1.0)
 
     def test_dissimilar_sentences(self):
         score = self.mmr._MMR__similarity("Here's a sentence", "Quelque chose de différent")
+        # similarity is hardly ever ar 0 so using arbitrary value of 0.4:
         self.assertTrue(score < 0.4)
 
     def test_count_words(self):
