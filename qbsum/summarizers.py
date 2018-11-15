@@ -57,7 +57,7 @@ class MMR(object):
         :type sent_1: str
         :param sent_2: the second sentence.
         :type sent_2: str
-        :return: similarity score
+        :return: similarity score, in [0,1], where 1 == perfect similarity.
         :rtype: float
         """
         sent_1 = self.__nlp(sent_1)
