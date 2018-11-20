@@ -110,4 +110,5 @@ venv.bak/
 
 # Corpora directories
 corpora/*
-!corpora/test/
+!corpora/dev/
+!corpora/news/

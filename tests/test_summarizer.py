@@ -2,31 +2,33 @@ import unittest
 import os
 import json
 from pathlib import Path
-from qbsum.corpus import Corpus
 from qbsum.summarizers import MMR
 
 class TestSummarizer(unittest.TestCase):
 
     def setUp(self):
         # Read directories description from file:
-        with open('directories.json') as f:
-            directories = json.load(f)
-        baseDir = Path(os.getcwd())
-        documentsDir = baseDir / directories['test']['documents']
-        queriesDir = baseDir / directories['test']['queries']
-        referencesDir = baseDir / directories['test']['references']
-
-        # Load the test corpus:
-        self.corpus = Corpus(documentsDir, queriesDir, referencesDir)
+        self.query = "How is the food?"
+        self.topic = [
+            [
+                "Great location, very good selection of food for breakfast buffet.",
+                "Stunning food, amazing service.",
+                "The food is excellent and the service great."
+            ],
+            [
+                "Great location, very good selection of food for breakfast buffet.",
+                "Stunning food, amazing service.",
+                "The food is excellent and the service great."
+            ]
+        ]
         self.mmr = MMR()
-    
 
     def test_summary_type(self):
-        summary = self.mmr.summarize(self.corpus.document_sets[0], self.corpus.queries[0])
+        summary = self.mmr.summarize(self.topic, self.query)
         self.assertIsInstance(summary, list)
 
     def test_sum_sentence_type(self):
-        summary = self.mmr.summarize(self.corpus.document_sets[0], self.corpus.queries[0])
+        summary = self.mmr.summarize(self.topic, self.query)
         self.assertIsInstance(summary[0], str)
 
     def test_similar_sentences(self):

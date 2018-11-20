@@ -1,8 +1,14 @@
 {
-    "test": {
-        "documents": "corpora/test/documents",
-        "queries": "corpora/test/queries",
-        "references": "corpora/test/references",
-        "summaries": "corpora/test/summaries/"
+    "dev": {
+        "documents": "corpora/dev/documents",
+        "queries": "corpora/dev/queries",
+        "references": "corpora/dev/references",
+        "summaries": "corpora/dev/summaries/"
+    },
+    "news": {
+        "documents": "corpora/news/documents",
+        "queries": "corpora/news/queries",
+        "references": "corpora/news/references/extractive",
+        "summaries": "corpora/news/summaries/"
     }    
 }
