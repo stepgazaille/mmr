@@ -4,7 +4,7 @@
 A set set of query-based summarization algorithms.
 
 ## Installation
-Requires Python >= 3.4.
+Requires Python >= 3.5.
 ```
 cd qbsum
 
@@ -15,11 +15,6 @@ pip install .
 pip install -e .
 ``` 
 
-Install spaCy model:
-``` 
-python -m spacy download en
-```
-
 
 ## Running tests
 Use the following command to run unit tests:
@@ -28,8 +23,8 @@ python -m unittest
 ```
 
 
-## Test corpus
-A small corpus built using articles from [The Guardian](https://www.theguardian.com/international) is provided for development and testing.
+## Developpement corpus
+A developpement corpus built using articles from [The Guardian](https://www.theguardian.com/international) is provided for development and testing.
 
 
 ## References

@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-import spacy
 from pathlib import Path
 from abc import ABC, abstractmethod
 
@@ -62,9 +61,7 @@ class DevCorpus(Corpus):
     """A data loader for the development corpus."""
 
     def __init__(self, documents_dir, queries_dir, references_dir):
-        
-        nlp = spacy.load('en_core_web_sm')
-        
+                
         self.__document_sets = []
         self.__queries = []
         self.__references = []
@@ -85,8 +82,7 @@ class DevCorpus(Corpus):
             doc_set_references = []
             for summary_file in os.listdir(str(references_dir/topic)):
                 summary = []
-                # with open(str(references_dir/topic/summary_file), encoding='utf-8-sig') as f:
-                with open(str(references_dir/topic/summary_file)) as f:
+                with open(str(references_dir/topic/summary_file), encoding='utf-8-sig') as f:
                     for sentence in f.readlines():
                         summary.append(sentence.rstrip())
                     doc_set_references.append(summary)
