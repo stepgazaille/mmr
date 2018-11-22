@@ -2,13 +2,7 @@
     "dev": {
         "documents": "corpora/dev/documents",
         "queries": "corpora/dev/queries",
-        "references": "corpora/dev/references",
+        "references": "corpora/dev/references/extractive",
         "summaries": "corpora/dev/summaries/"
-    },
-    "news": {
-        "documents": "corpora/news/documents",
-        "queries": "corpora/news/queries",
-        "references": "corpora/news/references/extractive",
-        "summaries": "corpora/news/summaries/"
     }    
 }

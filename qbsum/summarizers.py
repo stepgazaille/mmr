@@ -44,6 +44,7 @@ class MMR(object):
             selected[next_selected] = len(selected)
 
         if summary_file:
+            os.makedirs(os.path.dirname(str(summary_file)), exist_ok=True)
             with open(str(summary_file), 'w', encoding='utf-8-sig') as f:
                 f.write(" ".join(selected))
 
