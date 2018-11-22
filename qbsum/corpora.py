@@ -147,10 +147,10 @@ class NewsCorpus(Corpus):
             doc_set_references = []
             for summary_file in os.listdir(str(references_dir/topic)):
                 summary = []
-                with open(str(references_dir/topic/summary_file), encoding='utf-8-sig') as f:
-                    raw_text = nlp(f.read())
-                    for sentence in raw_text.sents:
-                        summary.append(sentence.text)
+                # with open(str(references_dir/topic/summary_file), encoding='utf-8-sig') as f:
+                with open(str(references_dir/topic/summary_file)) as f:
+                    for sentence in f.readlines():
+                        summary.append(sentence.rstrip())
                     doc_set_references.append(summary)
                 self.__references.append(doc_set_references)
 
@@ -159,9 +159,8 @@ class NewsCorpus(Corpus):
             for doc_file in os.listdir(str(documents_dir/topic)):
                 document = []
                 with open(str(documents_dir/topic/doc_file), encoding='utf-8-sig') as f:
-                    raw_text = nlp(f.read())
-                    for sentence in raw_text.sents:
-                        document.append(sentence.text)
+                    for sentence in f.readlines():
+                        document.append(sentence.rstrip())
                 document_set.append(document)
                 
             self.__document_sets.append(document_set)
