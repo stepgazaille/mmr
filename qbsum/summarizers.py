@@ -1,7 +1,8 @@
 import os
 import collections
-import spacy
 import re
+import en_core_web_sm
+from qbsum import preproc
 
 
 # Original implementation: https://www.quora.com/Where-can-I-find-a-maximum-marginal-relevance-algorithm-in-Python-for-redundancy-removal-in-two-documents
@@ -11,7 +12,7 @@ class MMR(object):
         """
         MMR default constructor. MMR is a simple query-based, multi-document summarization algorithm.
         """
-        self.__nlp = spacy.load('en')
+        self.__nlp = en_core_web_sm.load()
 
 
     def summarize(self, document_set, query, summary_file=None, max_length=10, lda=0.9):
@@ -30,17 +31,24 @@ class MMR(object):
         :return: the candidate summary
         :rtype: list(str)
         """
+
+        query = self.Sentence(query)
+
+
         complete_set = set()
         for document in document_set:
-            complete_set = complete_set.union(set(document))
+            preproc_doc = []
+            for sentence in document:
+                preproc_doc.append(self.Sentence(sentence))
+            complete_set = complete_set.union(set(preproc_doc))
 
         selected = collections.OrderedDict()
         summary_len = 0
         while set(selected) != complete_set and summary_len < max_length:
             remaining = complete_set - set(selected)
-            mmr_score = lambda x: lda*self.__similarity(x, query) - (1-lda)*max([self.__similarity(x, y) for y in set(selected)-{x}], default=0)
+            mmr_score = lambda x: lda*self.__similarity(x.preproc_text, query.preproc_text) - (1-lda)*max([self.__similarity(x.preproc_text, y.preproc_text) for y in set(selected)-{x}], default=0)
             next_selected = max(remaining, key=mmr_score) #self.__argmax(remaining, mmr_score)
-            summary_len += self.__count_words(next_selected)
+            summary_len += self.__count_words(next_selected.original_text)
             selected[next_selected] = len(selected)
 
         if summary_file:
@@ -48,7 +56,10 @@ class MMR(object):
             with open(str(summary_file), 'w', encoding='utf-8-sig') as f:
                 f.write(" ".join(selected))
 
-        return list(selected)
+        summary = []
+        for sentence in list(selected):
+            summary.append(sentence.original_text)
+        return summary
 
 
     def __similarity(self, sent_1, sent_2):
@@ -75,3 +86,31 @@ class MMR(object):
         :rtype: int
         """
         return len(re.sub(r"[^\w]", " ",  sentence).split())
+
+
+    class Sentence(object):
+        """A pre-processed string and its orignal form."""
+
+        def __init__(self, text):
+            """
+            Sentence constructor.
+            """
+            self.original_text = text
+            self.preproc_text = self.preproc(text)
+
+        def preproc(self, text):
+            """
+            Processes a string for improved similarity evaluation.
+            :param text: the string to be processed.
+            :type text: str
+            :return: a string free of special characters and digit where all words are stems
+            :rtype: str
+            """
+            lowercase_text = preproc.lowercase(text)
+            filtered_chars = preproc.remove_special_chars_from(lowercase_text)
+            filtered_digits = preproc.remove_digits_from(filtered_chars)
+            word_list = preproc.tokenize(filtered_digits)
+            filtered_words = preproc.remove_stopwords_from(word_list)
+            stems = preproc.stem(filtered_words)
+            preproc_sentence = " ".join(stems)
+            return preproc_sentence
