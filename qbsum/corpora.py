@@ -82,8 +82,7 @@ class DevCorpus(Corpus):
             doc_set_references = []
             for summary_file in os.listdir(str(references_dir/topic)):
                 summary = []
-                # with open(str(references_dir/topic/summary_file), encoding='utf-8-sig') as f:
-                with open(str(references_dir/topic/summary_file)) as f:
+                with open(str(references_dir/topic/summary_file), encoding='utf-8-sig') as f:
                     for sentence in f.readlines():
                         summary.append(sentence.rstrip())
                     doc_set_references.append(summary)
