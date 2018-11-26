@@ -4,7 +4,7 @@
 A set set of query-based summarization algorithms.
 
 ## Installation
-Requires Python >= 3.4.
+Requires Python >= 3.5.
 ```
 cd qbsum
 
