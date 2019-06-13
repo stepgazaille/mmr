@@ -1,5 +1,6 @@
 # MMR: Maximal Marginal Relevance
-[![Build Status](https://travis-ci.org/stepgazaille/qbsum.svg?branch=master)](https://travis-ci.org/stepgazaille/qbsum)
+<!---[![Build Status](https://travis-ci.org/stepgazaille/qbsum.svg?branch=master)](https://travis-ci.org/stepgazaille/qbsum) --->
+
 
 A naive implementation of MMR in Python 3.
 
