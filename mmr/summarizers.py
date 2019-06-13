@@ -2,7 +2,7 @@ import os
 import collections
 import re
 import en_core_web_sm
-from qbsum import preproc
+from mmr import preproc
 
 
 # Original implementation: https://www.quora.com/Where-can-I-find-a-maximum-marginal-relevance-algorithm-in-Python-for-redundancy-removal-in-two-documents

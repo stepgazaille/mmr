@@ -2,7 +2,7 @@ import unittest
 import os
 import json
 from pathlib import Path
-from qbsum.corpora import DevCorpus
+from mmr.corpora import DevCorpus
 
 class TestDevCorpus(unittest.TestCase):
 

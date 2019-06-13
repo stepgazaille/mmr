@@ -2,7 +2,7 @@ import unittest
 import os
 import json
 from pathlib import Path
-from qbsum.summarizers import MMR
+from mmr.summarizers import MMR
 
 class TestSummarizer(unittest.TestCase):
 

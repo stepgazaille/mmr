@@ -1,5 +1,5 @@
 import unittest
-from qbsum import preproc
+from mmr import preproc
 from nltk.corpus import stopwords
 
 class TestPreProc(unittest.TestCase):

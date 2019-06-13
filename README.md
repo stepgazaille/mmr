@@ -7,6 +7,7 @@ A naive implementation of MMR in Python 3.
 Requires Python >= 3.5.
 ```
 cd mmr
+pip install --upgrade pip
 
 # Normal installation:
 pip install .
